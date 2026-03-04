@@ -15,6 +15,7 @@ interface Atendimento {
     data_criacao: string;
     data_finalizacao?: string;
     usuario_responsavel?: string;
+    telegram_chat_id?: string;
 }
 
 export default function Dashboard() {
@@ -128,7 +129,7 @@ export default function Dashboard() {
                                 {activeTab === 'pendente' ? 'Triagem Pendente' : 'Histórico de Atendimentos'}
                             </h2>
                             <p className="text-gray-500 text-sm mt-1">
-                                {activeTab === 'pendente' ? 'Gerencie os novos contatos vindos do WhatsApp e priorize a fila de acordo com a predição da IA.' : 'Consulte as triagens já finalizadas.'}
+                                {activeTab === 'pendente' ? 'Gerencie os novos contatos vindos do Telegram e priorize a fila de acordo com a predição da IA.' : 'Consulte as triagens já finalizadas.'}
                             </p>
                         </div>
 

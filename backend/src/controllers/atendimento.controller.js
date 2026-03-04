@@ -1,5 +1,43 @@
 const db = require('../db');
 
+// Sync finalized Telegram clients into the atendimentos table
+async function syncTelegramClients() {
+    try {
+        const { rows } = await db.query(`
+            SELECT ct.chat_id, ct.primeiro_nome, ct.resumo_ia
+            FROM clientes_telegram ct
+            WHERE ct.status_triagem = 'finalizada'
+              AND NOT EXISTS (
+                SELECT 1 FROM atendimentos a WHERE a.telegram_chat_id = ct.chat_id
+              )
+        `);
+
+        for (const client of rows) {
+            await db.query(`
+                INSERT INTO atendimentos (nome, telefone, area_juridica, prioridade, resumo, status, telegram_chat_id)
+                VALUES ($1, $2, $3, $4, $5, 'pendente', $6)
+            `, [
+                client.primeiro_nome || 'Sem nome',
+                client.chat_id,
+                'A definir',
+                'Media',
+                client.resumo_ia || 'Triagem via Telegram (sem resumo)',
+                client.chat_id
+            ]);
+
+            await db.query(`
+                UPDATE clientes_telegram SET status_triagem = 'sincronizado' WHERE chat_id = $1
+            `, [client.chat_id]);
+        }
+
+        if (rows.length > 0) {
+            console.log(`[Sync] ${rows.length} new Telegram client(s) synced to portal.`);
+        }
+    } catch (err) {
+        console.error('[Sync] Error syncing Telegram clients:', err.message);
+    }
+}
+
 exports.create = async (req, res) => {
     try {
         const { nome, telefone, area_juridica, prioridade, resumo, status = 'pendente' } = req.body;
@@ -31,6 +69,9 @@ exports.create = async (req, res) => {
 
 exports.list = async (req, res) => {
     try {
+        // Sync new Telegram clients before listing
+        await syncTelegramClients();
+
         const { status } = req.query;
         let query = 'SELECT * FROM atendimentos';
         let values = [];
