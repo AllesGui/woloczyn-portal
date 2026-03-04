@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
 import AtendimentoCard from '../components/AtendimentoCard';
-import { LogOut, Search, Filter, LayoutDashboard, History, Activity } from 'lucide-react';
+import AtendimentoModal from '../components/AtendimentoModal';
+import { LogOut, Search, Filter, LayoutDashboard, History, Activity, BarChart3 } from 'lucide-react';
 
 interface Atendimento {
     id: string;
@@ -20,6 +22,7 @@ interface Atendimento {
 
 export default function Dashboard() {
     const { user, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<'pendente' | 'atendido'>('pendente');
     const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
     const [loading, setLoading] = useState(true);
@@ -27,6 +30,8 @@ export default function Dashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterArea, setFilterArea] = useState('');
     const [filterPrioridade, setFilterPrioridade] = useState('');
+
+    const [selectedAtendimento, setSelectedAtendimento] = useState<Atendimento | null>(null);
 
     const loadAtendimentos = async () => {
         try {
@@ -54,23 +59,36 @@ export default function Dashboard() {
         }
     };
 
+    const handleReabrir = async (id: string) => {
+        try {
+            await api.put(`/atendimentos/${id}/reabrir`);
+            loadAtendimentos();
+        } catch (error) {
+            console.error('Erro ao reabrir atendimento:', error);
+            alert('Não foi possível reabrir o atendimento.');
+        }
+    };
+
     const filteredAtendimentos = atendimentos.filter(a => {
         const matchSearch = a.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            a.telefone.includes(searchTerm);
+            a.telefone.includes(searchTerm) ||
+            a.resumo.toLowerCase().includes(searchTerm.toLowerCase());
         const matchArea = filterArea ? a.area_juridica === filterArea : true;
         const matchPrioridade = filterPrioridade ? a.prioridade === filterPrioridade : true;
 
         return matchSearch && matchArea && matchPrioridade;
     });
 
-    const areasUnicas = Array.from(new Set(atendimentos.map(a => a.area_juridica)));
+    // Dynamic filter categories from actual data
+    const areasUnicas = Array.from(new Set(atendimentos.map(a => a.area_juridica))).sort();
+    const prioridadesUnicas = Array.from(new Set(atendimentos.map(a => a.prioridade)));
 
     return (
         <div className="min-h-screen bg-brand-background flex flex-col md:flex-row">
             {/* Sidebar */}
             <aside className="w-full md:w-64 bg-brand-blue text-white p-6 flex flex-col shrink-0 shadow-xl z-10 hidden md:flex">
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-xl font-bold tracking-tight text-brand-gold uppercase">woloczyn <br /> e Schmidt</h1>
+                    <h1 className="text-xl font-bold tracking-tight text-brand-gold uppercase">woloczyn <br />e Schmidt</h1>
                     <p className="text-xs text-white/50 font-medium tracking-widest uppercase mt-2">Painel Jurídico</p>
                 </div>
 
@@ -92,6 +110,16 @@ export default function Dashboard() {
                         Atendidos
                         {activeTab === 'atendido' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-gold"></div>}
                     </button>
+
+                    <div className="pt-4 mt-4 border-t border-white/10">
+                        <button
+                            onClick={() => navigate('/analytics')}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-white/60 hover:text-white hover:bg-white/5"
+                        >
+                            <BarChart3 size={18} />
+                            Métricas
+                        </button>
+                    </div>
                 </nav>
 
                 <div className="mt-auto border-t border-white/10 pt-6">
@@ -119,7 +147,10 @@ export default function Dashboard() {
                 {/* Mobile Header */}
                 <div className="md:hidden flex justify-between items-center mb-6 bg-brand-blue p-4 rounded-2xl text-white shadow-lg">
                     <h1 className="font-bold text-brand-gold uppercase text-sm w-max tracking-tighter">woloczyn e Schmidt</h1>
-                    <button onClick={logout} className="p-2 text-white/60 hover:text-white"><LogOut size={18} /></button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => navigate('/analytics')} className="p-2 text-white/60 hover:text-white"><BarChart3 size={18} /></button>
+                        <button onClick={logout} className="p-2 text-white/60 hover:text-white"><LogOut size={18} /></button>
+                    </div>
                 </div>
 
                 <div className="max-w-6xl mx-auto pb-10">
@@ -145,7 +176,7 @@ export default function Dashboard() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                             <input
                                 type="text"
-                                placeholder="Buscar por nome ou telefone..."
+                                placeholder="Buscar por nome, telefone ou resumo..."
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-brand-gold outline-none text-sm transition-shadow"
@@ -175,9 +206,9 @@ export default function Dashboard() {
                                     className="w-full pl-9 pr-8 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-brand-gold outline-none text-sm appearance-none"
                                 >
                                     <option value="">Prioridade</option>
-                                    <option value="Alta">Alta</option>
-                                    <option value="Média">Média</option>
-                                    <option value="Baixa">Baixa</option>
+                                    {prioridadesUnicas.map(p => (
+                                        <option key={p} value={p}>{p}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -203,12 +234,24 @@ export default function Dashboard() {
                                     key={atendimento.id}
                                     atendimento={atendimento}
                                     onFinalizar={activeTab === 'pendente' ? handleFinalizar : undefined}
+                                    onReabrir={activeTab === 'atendido' ? handleReabrir : undefined}
+                                    onOpenDetail={setSelectedAtendimento}
                                 />
                             ))}
                         </div>
                     )}
                 </div>
             </main>
+
+            {/* Detail Modal */}
+            {selectedAtendimento && (
+                <AtendimentoModal
+                    atendimento={selectedAtendimento}
+                    onClose={() => setSelectedAtendimento(null)}
+                    onFinalizar={selectedAtendimento.status === 'pendente' ? handleFinalizar : undefined}
+                    onReabrir={selectedAtendimento.status === 'atendido' ? handleReabrir : undefined}
+                />
+            )}
         </div>
     );
 }

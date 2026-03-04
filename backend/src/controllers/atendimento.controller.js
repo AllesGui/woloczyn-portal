@@ -127,3 +127,27 @@ exports.finalizar = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao finalizar atendimento' });
     }
 };
+
+exports.reabrir = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const updateQuery = `
+            UPDATE atendimentos 
+            SET status = 'pendente', data_finalizacao = NULL, usuario_responsavel = NULL
+            WHERE id = $1
+            RETURNING *
+        `;
+
+        const result = await db.query(updateQuery, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Atendimento não encontrado' });
+        }
+
+        return res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao reabrir atendimento' });
+    }
+};

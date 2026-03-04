@@ -4,6 +4,7 @@ import { useContext } from 'react';
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Analytics from './pages/Analytics';
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { signed, loading } = useContext(AuthContext);
@@ -24,6 +25,14 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Dashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/analytics"
+                        element={
+                            <PrivateRoute>
+                                <Analytics />
                             </PrivateRoute>
                         }
                     />

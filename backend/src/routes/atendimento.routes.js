@@ -12,5 +12,6 @@ router.use(authMiddleware);
 
 router.get('/', atendimentoController.list);
 router.put('/:id/finalizar', atendimentoController.finalizar);
+router.put('/:id/reabrir', atendimentoController.reabrir);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { Clock, Phone, Tag, CheckCircle2, Send } from 'lucide-react';
+import { Clock, Phone, Tag, CheckCircle2, Send, RotateCcw, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -19,9 +19,11 @@ interface Atendimento {
 interface CardProps {
     atendimento: Atendimento;
     onFinalizar?: (id: string) => void;
+    onReabrir?: (id: string) => void;
+    onOpenDetail?: (atendimento: Atendimento) => void;
 }
 
-export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps) {
+export default function AtendimentoCard({ atendimento, onFinalizar, onReabrir, onOpenDetail }: CardProps) {
     const isPendente = atendimento.status === 'pendente';
 
     const priorityColors: Record<string, string> = {
@@ -33,26 +35,23 @@ export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps)
 
     const priorityBadge = priorityColors[atendimento.prioridade] || 'bg-gray-50 text-gray-700 border-gray-200';
 
-    const formatPhone = (phone: string) => {
-        // If it's a Telegram chat ID (just digits, no country code format), show as-is
-        if (phone.length <= 12 && /^\d+$/.test(phone)) {
-            return `Telegram #${phone}`;
-        }
-        return phone.replace(/(\d{2})(\d{2})(\d{4,5})(\d{4})/, '+$1 ($2) $3-$4');
-    };
+    const hasTelegram = !!atendimento.telegram_chat_id;
 
-    const openWhatsApp = () => {
-        window.open(`https://wa.me/${atendimento.telefone}`, '_blank');
-    };
-
-    const openTelegram = () => {
+    const openTelegram = (e: React.MouseEvent) => {
+        e.stopPropagation();
         window.open(`https://web.telegram.org/k/#${atendimento.telegram_chat_id}`, '_blank');
     };
 
-    const hasTelegram = !!atendimento.telegram_chat_id;
+    const openWhatsApp = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        window.open(`https://wa.me/${atendimento.telefone}`, '_blank');
+    };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all group hover:-translate-y-1 duration-300">
+        <div
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all group hover:-translate-y-1 duration-300 cursor-pointer"
+            onClick={() => onOpenDetail && onOpenDetail(atendimento)}
+        >
             <div className="flex justify-between items-start mb-5">
                 <div>
                     <h3 className="text-lg font-semibold text-brand-blue group-hover:text-brand-gold transition-colors">{atendimento.nome}</h3>
@@ -63,7 +62,7 @@ export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps)
                                 className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-500 transition-colors group/btn bg-gray-50 px-3 py-1.5 rounded-lg w-max"
                             >
                                 <Send size={14} className="group-hover/btn:text-blue-500" />
-                                Abrir no Telegram
+                                Telegram
                             </button>
                         ) : (
                             <button
@@ -71,7 +70,7 @@ export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps)
                                 className="flex items-center gap-2 text-sm text-gray-500 hover:text-green-600 transition-colors group/btn bg-gray-50 px-3 py-1.5 rounded-lg w-max"
                             >
                                 <Phone size={14} className="group-hover/btn:text-green-500" />
-                                {formatPhone(atendimento.telefone)}
+                                WhatsApp
                             </button>
                         )}
                     </div>
@@ -87,7 +86,7 @@ export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps)
                     {atendimento.area_juridica}
                 </div>
                 <div className="bg-brand-background rounded-xl p-4 border border-gray-100/50">
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                         {atendimento.resumo}
                     </p>
                 </div>
@@ -96,23 +95,36 @@ export default function AtendimentoCard({ atendimento, onFinalizar }: CardProps)
             <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
                 <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
                     <Clock size={14} />
-                    {format(new Date(isPendente ? atendimento.data_criacao : atendimento.data_finalizacao!), "dd 'de' MMM, HH:mm", { locale: ptBR })}
+                    {format(new Date(isPendente ? atendimento.data_criacao : (atendimento.data_finalizacao || atendimento.data_criacao)), "dd 'de' MMM, HH:mm", { locale: ptBR })}
                 </div>
 
-                {isPendente ? (
+                <div className="flex items-center gap-2">
                     <button
-                        onClick={() => onFinalizar && onFinalizar(atendimento.id)}
-                        className="flex items-center gap-2 text-sm font-semibold text-brand-blue hover:text-brand-gold transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-gold/10"
+                        onClick={(e) => { e.stopPropagation(); onOpenDetail && onOpenDetail(atendimento); }}
+                        className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-brand-blue py-1.5 px-2.5 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        <CheckCircle2 size={16} />
-                        Marcar como Atendido
+                        <Eye size={14} />
+                        Ver
                     </button>
-                ) : (
-                    <span className="flex items-center gap-2 text-sm font-semibold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg">
-                        <CheckCircle2 size={16} />
-                        Finalizado
-                    </span>
-                )}
+
+                    {isPendente && onFinalizar ? (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onFinalizar(atendimento.id); }}
+                            className="flex items-center gap-2 text-sm font-semibold text-brand-blue hover:text-brand-gold transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-gold/10"
+                        >
+                            <CheckCircle2 size={16} />
+                            Atendido
+                        </button>
+                    ) : onReabrir ? (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onReabrir(atendimento.id); }}
+                            className="flex items-center gap-2 text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors py-1.5 px-3 rounded-lg hover:bg-orange-50"
+                        >
+                            <RotateCcw size={16} />
+                            Reabrir
+                        </button>
+                    ) : null}
+                </div>
             </div>
         </div>
     );
