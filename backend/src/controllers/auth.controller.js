@@ -9,11 +9,16 @@ exports.login = async (req, res) => {
         const result = await db.query('SELECT * FROM users WHERE TRIM(email) = TRIM($1)', [email]);
         const user = result.rows[0];
 
+        console.log('[DEBUG] Login attempt for:', email);
+
         if (!user) {
+            console.log('[DEBUG] User NOT found in DB');
             return res.status(401).json({ error: 'User not found' });
         }
 
+        console.log('[DEBUG] User found. Hash in DB:', user.password_hash);
         const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        console.log('[DEBUG] Password matches?', isValidPassword);
 
         if (!isValidPassword) {
             return res.status(401).json({ error: 'Invalid password' });
