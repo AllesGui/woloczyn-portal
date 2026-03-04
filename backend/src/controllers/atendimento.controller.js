@@ -6,7 +6,7 @@ async function syncTelegramClients() {
         const { rows } = await db.query(`
             SELECT ct.chat_id, ct.primeiro_nome, ct.resumo_ia
             FROM clientes_telegram ct
-            WHERE ct.status_triagem = 'finalizada'
+            WHERE ct.status_triagem = 'concluido'
               AND NOT EXISTS (
                 SELECT 1 FROM atendimentos a WHERE a.telegram_chat_id = ct.chat_id
               )
