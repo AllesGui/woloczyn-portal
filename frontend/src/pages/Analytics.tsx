@@ -4,9 +4,15 @@ import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-    PieChart, Pie, Cell, AreaChart, Area, Legend
+    AreaChart, Area, Cell
 } from 'recharts';
-import { ArrowLeft, Users, Clock, CheckCircle2, TrendingUp, CalendarDays, BarChart3 } from 'lucide-react';
+import {
+import {
+        ArrowLeft, Clock,
+        CalendarDays, BarChart3, Target, Zap, Wallet,
+        ArrowUpRight, Info
+    } from 'lucide-react';
+} from 'lucide-react';
 
 interface Stats {
     summary: {
@@ -15,22 +21,18 @@ interface Stats {
         attended: number;
         thisWeek: number;
         thisMonth: number;
+        conversionRate: number;
+        avgResponseHours: number;
+        potentialValue: number;
     };
     daily: { date: string; count: number }[];
     areas: { area: string; count: number }[];
-    priorities: { priority: string; count: number }[];
 }
 
-const COLORS = ['#0a1d37', '#c9a15b', '#3b82f6', '#ef4444', '#10b981', '#8b5cf6', '#f59e0b'];
-const PRIORITY_COLORS: Record<string, string> = {
-    'Alta': '#ef4444',
-    'Media': '#f59e0b',
-    'Média': '#f59e0b',
-    'Baixa': '#10b981',
-};
+const COLORS = ['#0a1d37', '#c9a15b', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
 
 export default function Analytics() {
-    const { user } = useContext(AuthContext);
+    const { } = useContext(AuthContext);
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -51,16 +53,19 @@ export default function Analytics() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-brand-background flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-gold"></div>
+            <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div>
+                    <p className="text-brand-blue font-medium animate-pulse">Carregando inteligência...</p>
+                </div>
             </div>
         );
     }
 
     if (!stats) {
         return (
-            <div className="min-h-screen bg-brand-background flex items-center justify-center">
-                <p className="text-gray-500">Sem dados disponíveis</p>
+            <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+                <p className="text-gray-500">Sem dados operacionais para análise</p>
             </div>
         );
     }
@@ -70,115 +75,226 @@ export default function Analytics() {
         date: new Date(d.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
     }));
 
+    const funnelData = [
+        { name: 'Contatos', value: stats.summary.total, fill: '#0a1d37' },
+        { name: 'Em Triagem', value: stats.summary.pending, fill: '#3b82f6' },
+        { name: 'Convertidos', value: stats.summary.attended, fill: '#10b981' },
+    ];
+
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            maximumFractionDigits: 0
+        }).format(value);
+    };
+
     return (
-        <div className="min-h-screen bg-brand-background">
+        <div className="min-h-screen bg-[#f8fafc]">
             {/* Header */}
-            <header className="bg-brand-blue text-white p-6 shadow-xl">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/')} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
-                            <ArrowLeft size={20} />
+            <header className="bg-brand-blue text-white p-8 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={() => navigate('/')}
+                            className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all duration-300 backdrop-blur-md group"
+                        >
+                            <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
                         </button>
                         <div>
-                            <h1 className="text-xl font-bold flex items-center gap-2">
-                                <BarChart3 size={22} className="text-brand-gold" />
-                                Painel de Métricas
-                            </h1>
-                            <p className="text-white/50 text-sm mt-0.5">Visão geral do desempenho</p>
+                            <div className="flex items-center gap-3">
+                                <div className="bg-brand-gold p-2 rounded-lg">
+                                    <BarChart3 size={24} className="text-brand-blue" />
+                                </div>
+                                <h1 className="text-2xl font-bold tracking-tight">Estatísticas Estratégicas</h1>
+                            </div>
+                            <p className="text-white/60 text-sm mt-1 font-medium italic">Análise de performance e potencial jurídico</p>
                         </div>
                     </div>
-                    <p className="text-sm text-white/40">{user?.name}</p>
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto p-6 lg:p-10 space-y-8">
-                {/* Summary Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    {[
-                        { label: 'Total de Contatos', value: stats.summary.total, icon: Users, color: 'text-brand-blue', bg: 'bg-brand-blue/5' },
-                        { label: 'Pendentes', value: stats.summary.pending, icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50' },
-                        { label: 'Atendidos', value: stats.summary.attended, icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
-                        { label: 'Esta Semana', value: stats.summary.thisWeek, icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50' },
-                        { label: 'Este Mês', value: stats.summary.thisMonth, icon: CalendarDays, color: 'text-purple-600', bg: 'bg-purple-50' },
-                    ].map(card => (
-                        <div key={card.label} className={`${card.bg} rounded-2xl p-5 border border-gray-100 shadow-sm`}>
-                            <card.icon size={20} className={`${card.color} mb-2`} />
-                            <p className={`text-3xl font-bold ${card.color}`}>{card.value}</p>
-                            <p className="text-xs text-gray-500 font-medium mt-1">{card.label}</p>
+            <main className="max-w-7xl mx-auto p-6 lg:p-10 -mt-6">
+                {/* Advanced KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    {/* Potential Value */}
+                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Wallet size={80} className="text-brand-blue" />
                         </div>
-                    ))}
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                                <Wallet size={16} />
+                                Potencial de Carteira
+                            </div>
+                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                                {formatCurrency(stats.summary.potentialValue)}
+                            </p>
+                            <div className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 w-fit px-3 py-1 rounded-full">
+                                <ArrowUpRight size={14} />
+                                Estimativa Gerencial
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Conversion Rate */}
+                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Target size={80} className="text-brand-blue" />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                                <Target size={16} />
+                                Taxa de Conversão
+                            </div>
+                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                                {stats.summary.conversionRate}%
+                            </p>
+                            <p className="text-gray-400 text-xs font-medium">Contatos convertidos em atendimentos</p>
+                        </div>
+                    </div>
+
+                    {/* Efficiency */}
+                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Zap size={80} className="text-brand-blue" />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                                <Zap size={16} />
+                                Eficiência Operacional
+                            </div>
+                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                                {stats.summary.avgResponseHours}h
+                            </p>
+                            <p className="text-gray-400 text-xs font-medium">Tempo médio para finalização</p>
+                        </div>
+                    </div>
+
+                    {/* Funnel Recap */}
+                    <div className="bg-brand-blue rounded-[2rem] p-8 shadow-xl border border-white/10 relative overflow-hidden group">
+                        <div className="flex flex-col h-full justify-between">
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-white/60 text-xs font-bold uppercase">
+                                    <span>Funnel de hoje</span>
+                                    <Clock size={14} />
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-white/80 text-sm font-medium">Total Contatos</span>
+                                        <span className="text-white text-xl font-bold">{stats.summary.total}</span>
+                                    </div>
+                                    <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                        <div className="bg-brand-gold h-full" style={{ width: '100%' }}></div>
+                                    </div>
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-white/80 text-sm font-medium">Convertidos</span>
+                                        <span className="text-brand-gold text-xl font-bold">{stats.summary.attended}</span>
+                                    </div>
+                                    <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                        <div className="bg-green-400 h-full" style={{ width: `${stats.summary.conversionRate}%` }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Charts Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Daily Trend */}
-                    <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 className="text-sm font-semibold text-brand-blue mb-4">Contatos por Dia (Últimos 30 dias)</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Chart: Volume Trend */}
+                    <div className="lg:col-span-2 bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-lg font-bold text-brand-blue">Tendência de Volume</h3>
+                            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 px-4 py-2 rounded-xl">
+                                <CalendarDays size={14} />
+                                ÚLTIMOS 30 DIAS
+                            </div>
+                        </div>
                         {dailyFormatted.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={280}>
+                            <ResponsiveContainer width="100%" height={320}>
                                 <AreaChart data={dailyFormatted}>
                                     <defs>
                                         <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#c9a15b" stopOpacity={0.3} />
+                                            <stop offset="5%" stopColor="#c9a15b" stopOpacity={0.4} />
                                             <stop offset="95%" stopColor="#c9a15b" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                                    <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                                    <Tooltip
-                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
-                                        labelStyle={{ color: '#0a1d37', fontWeight: 600 }}
+                                    <CartesianGrid strokeDasharray="5 5" vertical={false} stroke="#f1f5f9" />
+                                    <XAxis
+                                        dataKey="date"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12, fill: '#64748b', fontWeight: 500 }}
+                                        dy={10}
                                     />
-                                    <Area type="monotone" dataKey="count" stroke="#c9a15b" strokeWidth={2.5} fill="url(#colorCount)" name="Contatos" />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        allowDecimals={false}
+                                        tick={{ fontSize: 12, fill: '#64748b', fontWeight: 500 }}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            borderRadius: '16px',
+                                            border: 'none',
+                                            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                                            padding: '12px'
+                                        }}
+                                        itemStyle={{ color: '#0a1d37', fontWeight: 700 }}
+                                    />
+                                    <Area type="monotone" dataKey="count" stroke="#c9a15b" strokeWidth={4} fill="url(#colorCount)" name="Leads" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-[280px] flex items-center justify-center text-gray-400 text-sm">Sem dados no período</div>
+                            <div className="h-[320px] flex items-center justify-center text-gray-400">Aguardando novos leads...</div>
                         )}
                     </div>
 
-                    {/* Priority Pie */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h3 className="text-sm font-semibold text-brand-blue mb-4">Distribuição por Prioridade</h3>
-                        {stats.priorities.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={280}>
-                                <PieChart>
-                                    <Pie
-                                        data={stats.priorities}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={100}
-                                        paddingAngle={4}
-                                        dataKey="count"
-                                        nameKey="priority"
-                                    >
-                                        {stats.priorities.map((entry, index) => (
-                                            <Cell key={index} fill={PRIORITY_COLORS[entry.priority] || COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                                    <Legend wrapperStyle={{ fontSize: '12px' }} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-[280px] flex items-center justify-center text-gray-400 text-sm">Sem dados</div>
-                        )}
+                    {/* Funnel Visual */}
+                    <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
+                        <h3 className="text-lg font-bold text-brand-blue mb-8">Funnel de Conversão</h3>
+                        <ResponsiveContainer width="100%" height={320}>
+                            <BarChart data={funnelData} layout="vertical" barSize={35}>
+                                <XAxis type="number" hide />
+                                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#0a1d37', fontWeight: 600, fontSize: 12 }} />
+                                <Tooltip
+                                    cursor={{ fill: '#f8fafc' }}
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+                                />
+                                <Bar dataKey="value" radius={[0, 20, 20, 0]}>
+                                    {funnelData.map((entry, index) => (
+                                        <Cell key={index} fill={entry.fill} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                        <div className="mt-4 pt-6 border-t border-gray-50 flex items-center gap-3 text-brand-blue/60 italic text-xs leading-relaxed">
+                            <Info size={16} />
+                            <p>O funil representa o fluxo vital do escritório, desde a prospecção inicial até o fechamento contratual.</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Areas Bar Chart */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <h3 className="text-sm font-semibold text-brand-blue mb-4">Assuntos Mais Procurados</h3>
+                {/* Bottom Row: Areas Ranking */}
+                <div className="mt-8 bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between mb-10">
+                        <div>
+                            <h3 className="text-lg font-bold text-brand-blue">Performance por Área Jurídica</h3>
+                            <p className="text-gray-400 text-sm mt-1">Quais áreas estão gerando mais solicitações</p>
+                        </div>
+                    </div>
                     {stats.areas.length > 0 ? (
                         <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={stats.areas} layout="vertical" margin={{ left: 20 }}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
-                                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                                <YAxis dataKey="area" type="category" width={120} tick={{ fontSize: 12, fill: '#374151', fontWeight: 500 }} />
-                                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                                <Bar dataKey="count" name="Contatos" radius={[0, 8, 8, 0]} barSize={28}>
+                            <BarChart data={stats.areas}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="area" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+                                <Tooltip
+                                    cursor={{ fill: '#f8fafc' }}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                                />
+                                <Bar dataKey="count" name="Contatos" radius={[10, 10, 0, 0]} barSize={50}>
                                     {stats.areas.map((_, index) => (
                                         <Cell key={index} fill={COLORS[index % COLORS.length]} />
                                     ))}
@@ -186,7 +302,7 @@ export default function Analytics() {
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="h-[300px] flex items-center justify-center text-gray-400 text-sm">Sem dados</div>
+                        <div className="h-[300px] flex items-center justify-center text-gray-400">Dados indisponíveis</div>
                     )}
                 </div>
             </main>
