@@ -9,13 +9,9 @@ exports.login = async (req, res) => {
         const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         const user = result.rows[0];
 
-        console.log('Login attempt for email:', email);
         if (!user) {
-            console.log('User not found in database');
             return res.status(401).json({ error: 'User not found' });
         }
-
-        console.log('User found, comparing passwords...');
 
         const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
