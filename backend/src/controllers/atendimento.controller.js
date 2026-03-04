@@ -4,7 +4,7 @@ const db = require('../db');
 async function syncTelegramClients() {
     try {
         const { rows } = await db.query(`
-            SELECT ct.chat_id, ct.primeiro_nome, ct.resumo_ia
+            SELECT ct.chat_id, ct.primeiro_nome, ct.resumo_ia, ct.area
             FROM clientes_telegram ct
             WHERE ct.status_triagem = 'concluido'
               AND NOT EXISTS (
@@ -19,7 +19,7 @@ async function syncTelegramClients() {
             `, [
                 client.primeiro_nome || 'Sem nome',
                 client.chat_id,
-                'A definir',
+                client.area || 'A definir',
                 'Media',
                 client.resumo_ia || 'Triagem via Telegram (sem resumo)',
                 client.chat_id
