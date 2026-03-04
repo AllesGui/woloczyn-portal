@@ -1,3 +1,4 @@
+// Build Version: 1.0.1 - Update branding to Schmidt & Woloczyn
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import { useContext } from 'react';
