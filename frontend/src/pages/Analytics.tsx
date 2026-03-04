@@ -7,11 +7,9 @@ import {
     AreaChart, Area, Cell
 } from 'recharts';
 import {
-import {
-        ArrowLeft, Clock,
-        CalendarDays, BarChart3, Target, Zap, Wallet,
-        ArrowUpRight, Info
-    } from 'lucide-react';
+    ArrowLeft, Clock,
+    CalendarDays, BarChart3, Target, Zap, Wallet,
+    ArrowUpRight, Info
 } from 'lucide-react';
 
 interface Stats {
