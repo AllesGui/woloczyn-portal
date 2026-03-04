@@ -127,7 +127,7 @@ export default function Analytics() {
                                 Potencial de Carteira
                             </div>
                             <p className="text-4xl font-extrabold text-brand-blue mb-2">
-                                {formatCurrency(stats.summary.potentialValue)}
+                                {formatCurrency(stats.summary.potentialValue ?? 0)}
                             </p>
                             <div className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 w-fit px-3 py-1 rounded-full">
                                 <ArrowUpRight size={14} />
@@ -147,7 +147,7 @@ export default function Analytics() {
                                 Taxa de Conversão
                             </div>
                             <p className="text-4xl font-extrabold text-brand-blue mb-2">
-                                {stats.summary.conversionRate}%
+                                {stats.summary.conversionRate ?? 0}%
                             </p>
                             <p className="text-gray-400 text-xs font-medium">Contatos convertidos em atendimentos</p>
                         </div>
@@ -164,7 +164,7 @@ export default function Analytics() {
                                 Eficiência Operacional
                             </div>
                             <p className="text-4xl font-extrabold text-brand-blue mb-2">
-                                {stats.summary.avgResponseHours}h
+                                {stats.summary.avgResponseHours ?? 0}h
                             </p>
                             <p className="text-gray-400 text-xs font-medium">Tempo médio para finalização</p>
                         </div>
