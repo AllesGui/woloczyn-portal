@@ -253,9 +253,16 @@ export default function Analytics() {
                     <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
                         <h3 className="text-lg font-bold text-brand-blue mb-8">Funnel de Conversão</h3>
                         <ResponsiveContainer width="100%" height={320}>
-                            <BarChart data={funnelData} layout="vertical" barSize={35}>
+                            <BarChart data={funnelData} layout="vertical" barSize={35} margin={{ left: 10, right: 30 }}>
                                 <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#0a1d37', fontWeight: 600, fontSize: 12 }} />
+                                <YAxis
+                                    dataKey="name"
+                                    type="category"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    width={100}
+                                    tick={{ fill: '#0a1d37', fontWeight: 600, fontSize: 12 }}
+                                />
                                 <Tooltip
                                     cursor={{ fill: '#f8fafc' }}
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
