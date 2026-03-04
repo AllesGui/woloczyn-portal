@@ -40,8 +40,8 @@ export default function Login() {
                     <div className="w-16 h-16 bg-brand-blue rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-brand-blue/30 text-brand-gold">
                         <Scale size={32} />
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-brand-blue uppercase">woloczyn e Schmidt</h1>
-                    <p className="text-sm font-medium text-gray-500 mt-1">Portal de Triagem Jurídica</p>
+                    <h1 className="text-2xl font-bold tracking-tight text-brand-blue uppercase text-center leading-tight">Schmidt <br />& Woloczyn</h1>
+                    <p className="text-sm font-medium text-gray-500 mt-1">Sociedade de Advogados</p>
                 </div>
 
                 {error && (

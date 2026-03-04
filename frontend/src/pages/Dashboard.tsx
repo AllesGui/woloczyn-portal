@@ -88,8 +88,8 @@ export default function Dashboard() {
             {/* Sidebar */}
             <aside className="w-full md:w-64 bg-brand-blue text-white p-6 flex flex-col shrink-0 shadow-xl z-10 hidden md:flex">
                 <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-xl font-bold tracking-tight text-brand-gold uppercase">woloczyn <br />e Schmidt</h1>
-                    <p className="text-xs text-white/50 font-medium tracking-widest uppercase mt-2">Painel Jurídico</p>
+                    <h1 className="text-xl font-bold tracking-tight text-brand-gold uppercase leading-tight">Schmidt <br />& Woloczyn</h1>
+                    <p className="text-xs text-white/50 font-medium tracking-widest uppercase mt-2">Sociedade de Advogados</p>
                 </div>
 
                 <nav className="flex-1 space-y-2">
@@ -146,7 +146,7 @@ export default function Dashboard() {
             <main className="flex-1 p-6 lg:p-10 overflow-auto h-screen relative">
                 {/* Mobile Header */}
                 <div className="md:hidden flex justify-between items-center mb-6 bg-brand-blue p-4 rounded-2xl text-white shadow-lg">
-                    <h1 className="font-bold text-brand-gold uppercase text-sm w-max tracking-tighter">woloczyn e Schmidt</h1>
+                    <h1 className="font-bold text-brand-gold uppercase text-sm w-max tracking-tighter">Schmidt & Woloczyn</h1>
                     <div className="flex items-center gap-2">
                         <button onClick={() => navigate('/analytics')} className="p-2 text-white/60 hover:text-white"><BarChart3 size={18} /></button>
                         <button onClick={logout} className="p-2 text-white/60 hover:text-white"><LogOut size={18} /></button>
