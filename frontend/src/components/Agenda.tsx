@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Loader2, RefreshCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../services/api';
 
-// Mock types
+// Types matched with DB
 interface Appointment {
   id: string;
   title: string;
@@ -18,6 +19,7 @@ interface Appointment {
 export default function Agenda() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -25,18 +27,28 @@ export default function Agenda() {
   // Form State
   const [formData, setFormData] = useState({ title: '', client: '', time: '09:00', duration: 60, urgency: 'Média', description: '' });
 
-  // Load from local storage initially
-  useEffect(() => {
-    const saved = localStorage.getItem('@woloczyn:agenda');
-    if (saved) {
-      setAppointments(JSON.parse(saved));
-    } else {
-      // Mock data
-      setAppointments([
-        { id: '1', title: 'Reunião Inicial', client: 'João Silva', date: new Date().toISOString().split('T')[0], time: '10:00', duration: 60, urgency: 'Alta', description: 'Reunião estratégica sobre contencioso.', color: 'border-red-500/30 text-red-300' },
-        { id: '2', title: 'Assinatura', client: 'Maria Souza', date: new Date().toISOString().split('T')[0], time: '14:30', duration: 30, urgency: 'Baixa', description: 'Assinatura de honorários.', color: 'border-emerald-500/30 text-emerald-300' },
-      ]);
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.get('/agenda');
+      
+      // Post-process dates from DB to YYYY-MM-DD local
+      const processed = data.map((appt: any) => ({
+        ...appt,
+        date: new Date(appt.date).toISOString().split('T')[0],
+        color: getUrgencyColor(appt.urgency)
+      }));
+      
+      setAppointments(processed);
+    } catch (err) {
+      console.error("Erro ao carregar agenda:", err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
   const getStartOfWeek = (date: Date) => {
@@ -96,12 +108,15 @@ export default function Agenda() {
     setIsModalOpen(true);
   };
 
-  const deleteAppointment = () => {
+  const deleteAppointment = async () => {
     if (!editingId) return;
-    const updated = appointments.filter(a => a.id !== editingId);
-    setAppointments(updated);
-    localStorage.setItem('@woloczyn:agenda', JSON.stringify(updated));
-    setIsModalOpen(false);
+    try {
+      await api.delete(`/agenda/${editingId}`);
+      setAppointments(prev => prev.filter(a => a.id !== editingId));
+      setIsModalOpen(false);
+    } catch (err) {
+      alert("Erro ao excluir. Tente novamente.");
+    }
   };
 
   const getUrgencyColor = (urgency: string) => {
@@ -110,32 +125,42 @@ export default function Agenda() {
     return 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300';
   };
 
-  const saveAppointment = (e: React.FormEvent) => {
+  const saveAppointment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSlot) return;
 
-    const newAppt: Appointment = {
-      id: editingId || Math.random().toString(36).substr(2, 9),
+    const payload = {
       title: formData.title || 'Compromisso',
       client: formData.client,
       date: selectedSlot.date,
       time: formData.time,
       duration: Number(formData.duration),
       urgency: formData.urgency,
-      description: formData.description,
-      color: getUrgencyColor(formData.urgency)
+      description: formData.description
     };
 
-    let updated;
-    if (editingId) {
-      updated = appointments.map(a => a.id === editingId ? newAppt : a);
-    } else {
-      updated = [...appointments, newAppt];
+    try {
+      if (editingId) {
+        const { data } = await api.put(`/agenda/${editingId}`, payload);
+        const updatedAppt = {
+            ...data,
+            date: new Date(data.date).toISOString().split('T')[0],
+            color: getUrgencyColor(data.urgency)
+        };
+        setAppointments(prev => prev.map(a => a.id === editingId ? updatedAppt : a));
+      } else {
+        const { data } = await api.post('/agenda', payload);
+        const newAppt = {
+            ...data,
+            date: new Date(data.date).toISOString().split('T')[0],
+            color: getUrgencyColor(data.urgency)
+        };
+        setAppointments(prev => [...prev, newAppt]);
+      }
+      setIsModalOpen(false);
+    } catch (err) {
+      alert("Erro ao salvar. Verifique a conexão.");
     }
-
-    setAppointments(updated);
-    localStorage.setItem('@woloczyn:agenda', JSON.stringify(updated));
-    setIsModalOpen(false);
   };
 
   const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -150,11 +175,14 @@ export default function Agenda() {
             Agenda Jurídica
           </h2>
           <p className="text-brand-silver/50 text-sm mt-2 tracking-wide font-medium">
-            Gerencie seus compromissos, audiências e reuniões.
+            Gerencie seus compromissos sincronizados em todos os dispositivos.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <button onClick={fetchEvents} className={`p-2 text-brand-silver/40 hover:text-white transition-all ${loading ? 'animate-spin-slow' : ''}`} title="Sincronizar">
+            <RefreshCcw size={18} />
+          </button>
           <button onClick={handleToday} className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-brand-silver hover:text-white bg-white/5 border border-white/10 rounded-xl transition-all hover:bg-white/10">
             Hoje
           </button>
@@ -182,85 +210,94 @@ export default function Agenda() {
 
       {/* Calendar Grid */}
       <div className="glass-panel overflow-hidden flex-1 flex flex-col min-h-[600px] border border-white/5 shadow-2xl relative z-10">
-        {/* Days Header */}
-        <div className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] border-b border-white/5 bg-black/20">
-          <div className="p-3 border-r border-white/5"></div>
-          {weekDays.map((date, i) => {
-            const isToday = new Date().toDateString() === date.toDateString();
-            return (
-              <div key={i} className={`p-3 text-center border-r border-white/5 last:border-r-0 ${isToday ? 'bg-white/5' : ''}`}>
-                <div className={`text-[10px] font-bold uppercase tracking-widest ${isToday ? 'text-brand-accent' : 'text-brand-silver/40'}`}>
-                  {dayNames[date.getDay()]}
-                </div>
-                <div className={`text-xl mt-1 font-light ${isToday ? 'text-white' : 'text-brand-silver'}`}>
-                  {date.getDate()}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Time Grid */}
-        <div className="flex-1 overflow-y-auto no-scrollbar relative min-h-[500px]">
-          <div className="absolute inset-0 grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr]">
-            {/* Hours Column */}
-            <div className="border-r border-white/5 flex flex-col bg-brand-surface/30">
-              {hours.map(hour => (
-                <div key={hour} className="h-24 border-b border-white/5 relative flex items-start justify-center pt-2 shrink-0">
-                  <span className="text-[10px] font-bold text-brand-silver/30">{hour}:00</span>
-                </div>
-              ))}
-            </div>
-            
-            {/* Day Columns */}
-            {weekDays.map((date, dayIdx) => (
-              <div key={dayIdx} className="border-r border-white/5 last:border-r-0 relative pt-0">
-                {hours.map(hour => (
-                  <div
-                    key={hour}
-                    className="h-24 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group shrink-0"
-                    onClick={() => openSlot(date, hour)}
-                  >
-                    {/* Hover indicator */}
-                    <div className="opacity-0 group-hover:opacity-100 flex items-center justify-center h-full w-full">
-                      <Plus size={16} className="text-brand-silver/20" />
+        
+        {loading && appointments.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center bg-black/20">
+            <Loader2 size={40} className="text-brand-accent animate-spin mb-4 opacity-50" />
+            <p className="text-brand-silver/30 text-xs font-bold uppercase tracking-widest">Sincronizando Banco de Dados...</p>
+          </div>
+        ) : (
+          <>
+            {/* Days Header */}
+            <div className="grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr] border-b border-white/5 bg-black/20">
+              <div className="p-3 border-r border-white/5"></div>
+              {weekDays.map((date, i) => {
+                const isToday = new Date().toDateString() === date.toDateString();
+                return (
+                  <div key={i} className={`p-3 text-center border-r border-white/5 last:border-r-0 ${isToday ? 'bg-white/5' : ''}`}>
+                    <div className={`text-[10px] font-bold uppercase tracking-widest ${isToday ? 'text-brand-accent' : 'text-brand-silver/40'}`}>
+                      {dayNames[date.getDay()]}
+                    </div>
+                    <div className={`text-xl mt-1 font-light ${isToday ? 'text-white' : 'text-brand-silver'}`}>
+                      {date.getDate()}
                     </div>
                   </div>
+                );
+              })}
+            </div>
+
+            {/* Time Grid */}
+            <div className="flex-1 overflow-y-auto no-scrollbar relative min-h-[500px]">
+              <div className="absolute inset-0 grid grid-cols-[60px_1fr_1fr_1fr_1fr_1fr]">
+                {/* Hours Column */}
+                <div className="border-r border-white/5 flex flex-col bg-brand-surface/30">
+                  {hours.map(hour => (
+                    <div key={hour} className="h-24 border-b border-white/5 relative flex items-start justify-center pt-2 shrink-0">
+                      <span className="text-[10px] font-bold text-brand-silver/30">{hour}:00</span>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Day Columns */}
+                {weekDays.map((date, dayIdx) => (
+                  <div key={dayIdx} className="border-r border-white/5 last:border-r-0 relative pt-0">
+                    {hours.map(hour => (
+                      <div
+                        key={hour}
+                        className="h-24 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group shrink-0"
+                        onClick={() => openSlot(date, hour)}
+                      >
+                        {/* Hover indicator */}
+                        <div className="opacity-0 group-hover:opacity-100 flex items-center justify-center h-full w-full">
+                          <Plus size={16} className="text-brand-silver/20" />
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Render Appointments */}
+                    {appointments.filter(a => a.date === date.toISOString().split('T')[0]).map(appt => {
+                      const hourParts = appt.time.split(':');
+                      const startHour = parseInt(hourParts[0]);
+                      const startMin = parseInt(hourParts[1] || '0');
+                      
+                      if (startHour < 8 || startHour > 18) return null; // Outside visible range
+
+                      // Height of each hour cell is 96px (h-24)
+                      const topOffset = ((startHour - 8) * 96) + ((startMin / 60) * 96);
+                      const height = (appt.duration / 60) * 96;
+
+                      return (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          key={appt.id}
+                          className={`absolute left-1 right-1 rounded-lg border p-2 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-md z-10 ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
+                          style={{ top: `${topOffset}px`, height: `${Math.max(height, 30)}px` }}
+                          onClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
+                        >
+                          <div className="font-semibold truncate text-[10px] uppercase tracking-wide leading-tight">{appt.title}</div>
+                          {height > 40 && (
+                            <div className="opacity-70 truncate font-medium text-[10px] mt-0.5">{appt.time} • {appt.client}</div>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 ))}
-
-                {/* Render Appointments */}
-                {appointments.filter(a => a.date === date.toISOString().split('T')[0]).map(appt => {
-                  const hourParts = appt.time.split(':');
-                  const startHour = parseInt(hourParts[0]);
-                  const startMin = parseInt(hourParts[1] || '0');
-                  
-                  if (startHour < 8 || startHour > 18) return null; // Outside visible range
-
-                  // Height of each hour cell is 96px (h-24)
-                  const topOffset = ((startHour - 8) * 96) + ((startMin / 60) * 96);
-                  const height = (appt.duration / 60) * 96;
-
-                  return (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      key={appt.id}
-                      className={`absolute left-1 right-1 rounded-lg border p-2 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-md z-10 ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
-                      style={{ top: `${topOffset}px`, height: `${Math.max(height, 30)}px` }}
-                      onClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
-                      onDoubleClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
-                    >
-                      <div className="font-semibold truncate text-[10px] uppercase tracking-wide leading-tight">{appt.title}</div>
-                      {height > 40 && (
-                        <div className="opacity-70 truncate font-medium text-[10px] mt-0.5">{appt.time} • {appt.client}</div>
-                      )}
-                    </motion.div>
-                  );
-                })}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Appointment Modal */}
