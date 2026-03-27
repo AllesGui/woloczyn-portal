@@ -40,7 +40,7 @@ export default function Login() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-md mx-4 glass-panel p-10 relative z-10 before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/10 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:-z-10"
+                className="w-full max-w-md mx-4 bg-brand-background shadow-2xl rounded-2xl border border-white/5 p-10 relative z-10 before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/10 before:bg-gradient-to-b before:from-white/2 before:to-transparent before:-z-10"
             >
                 <div className="flex flex-col items-center mb-10">
                     <motion.div 
