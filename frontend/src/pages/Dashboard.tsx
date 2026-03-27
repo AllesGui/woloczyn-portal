@@ -103,7 +103,7 @@ export default function Dashboard() {
                     <img 
                         src="/logo.png" 
                         alt="Schmidt & Woloczyn" 
-                        className="w-[200px] h-auto object-contain mix-blend-screen drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]"
+                        className="w-[200px] h-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                 </div>
@@ -164,7 +164,7 @@ export default function Dashboard() {
                     <img 
                         src="/logo.png" 
                         alt="Schmidt & Woloczyn" 
-                        className="w-full h-full object-contain object-left mix-blend-screen"
+                        className="w-full h-full object-contain object-left"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                  </div>

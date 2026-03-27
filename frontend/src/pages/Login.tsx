@@ -52,7 +52,7 @@ export default function Login() {
                         <img 
                             src="/logo.png" 
                             alt="Schmidt & Woloczyn" 
-                            className="w-[280px] h-auto object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                            className="w-[280px] h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
                             onError={(e) => {
                                 e.currentTarget.style.display = 'none';
                                 e.currentTarget.parentElement!.innerHTML = '<div class="text-brand-silver/40 text-xs border border-dashed border-white/20 p-8 rounded-xl text-center">Salve a sua logo como<br/><b class="text-brand-silver">frontend/public/logo.png</b></div>';

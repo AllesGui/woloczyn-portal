@@ -129,7 +129,7 @@ export default function Analytics() {
                         <img 
                             src="/logo.png" 
                             alt="Schmidt & Woloczyn" 
-                            className="w-32 object-contain mix-blend-screen"
+                            className="w-32 object-contain"
                             onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                         <div className="h-8 w-px bg-white/10"></div>
