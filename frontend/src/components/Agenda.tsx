@@ -229,7 +229,7 @@ export default function Agenda() {
             });
             setIsModalOpen(true); 
           }} className="p-2.5 bg-brand-silver/10 hover:bg-brand-silver/20 border border-brand-silver/20 text-brand-accent rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-            <Plus size(20) />
+            <Plus size={20} />
           </button>
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function Agenda() {
                     </button>
                   )}
                   <button onClick={() => setIsModalOpen(false)} className="text-brand-silver/50 hover:text-white transition-colors p-1">
-                    <X size(20) />
+                    <X size={20} />
                   </button>
                 </div>
               </div>
