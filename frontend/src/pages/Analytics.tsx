@@ -109,7 +109,7 @@ export default function Analytics() {
             <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-brand-silver/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
             {/* Header */}
-            <header className="relative z-10 p-6 lg:p-10 border-b border-white/5 bg-black/20 backdrop-blur-md">
+            <header className="relative z-10 p-6 lg:p-10 border-b border-white/5 bg-brand-background backdrop-blur-md">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
                         <button
@@ -129,7 +129,7 @@ export default function Analytics() {
                         <img 
                             src="/logo.png" 
                             alt="Schmidt & Woloczyn" 
-                            className="w-32 object-contain mix-blend-screen"
+                            className="w-32 object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
                             onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                         <div className="h-8 w-px bg-white/10"></div>
