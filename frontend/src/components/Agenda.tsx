@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Loader2, RefreshCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Loader2, RefreshCcw, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
@@ -13,6 +13,7 @@ interface Appointment {
   client: string;
   urgency?: string;
   description?: string;
+  responsible_lawyer?: string;
   color?: string;
 }
 
@@ -25,14 +26,21 @@ export default function Agenda() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form State
-  const [formData, setFormData] = useState({ title: '', client: '', time: '09:00', duration: 60, urgency: 'Média', description: '' });
+  const [formData, setFormData] = useState({ 
+    title: '', 
+    client: '', 
+    time: '09:00', 
+    duration: 60, 
+    urgency: 'Média', 
+    description: '',
+    responsible_lawyer: 'Natália' 
+  });
 
   const fetchEvents = async () => {
     try {
       setLoading(true);
       const { data } = await api.get('/agenda');
       
-      // Post-process dates from DB to YYYY-MM-DD local
       const processed = data.map((appt: any) => ({
         ...appt,
         date: new Date(appt.date).toISOString().split('T')[0],
@@ -54,7 +62,7 @@ export default function Agenda() {
   const getStartOfWeek = (date: Date) => {
     const d = new Date(date);
     const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday (Monday as start)
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
     return new Date(d.setDate(diff));
   };
 
@@ -90,7 +98,15 @@ export default function Agenda() {
       date: date.toISOString().split('T')[0],
       time: `${hour.toString().padStart(2, '0')}:00`
     });
-    setFormData({ title: '', client: '', time: `${hour.toString().padStart(2, '0')}:00`, duration: 60, urgency: 'Média', description: '' });
+    setFormData({ 
+      title: '', 
+      client: '', 
+      time: `${hour.toString().padStart(2, '0')}:00`, 
+      duration: 60, 
+      urgency: 'Média', 
+      description: '',
+      responsible_lawyer: 'Natália'
+    });
     setIsModalOpen(true);
   };
 
@@ -103,7 +119,8 @@ export default function Agenda() {
       time: appt.time,
       duration: appt.duration,
       urgency: appt.urgency || 'Média',
-      description: appt.description || ''
+      description: appt.description || '',
+      responsible_lawyer: appt.responsible_lawyer || 'Natália'
     });
     setIsModalOpen(true);
   };
@@ -115,7 +132,7 @@ export default function Agenda() {
       setAppointments(prev => prev.filter(a => a.id !== editingId));
       setIsModalOpen(false);
     } catch (err) {
-      alert("Erro ao excluir. Tente novamente.");
+      alert("Erro ao excluir.");
     }
   };
 
@@ -125,18 +142,19 @@ export default function Agenda() {
     return 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300';
   };
 
+  const getLawyerBadge = (lawyer: string) => {
+    if (lawyer === 'Natália') return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+    return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+  };
+
   const saveAppointment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSlot) return;
 
     const payload = {
-      title: formData.title || 'Compromisso',
-      client: formData.client,
+      ...formData,
       date: selectedSlot.date,
-      time: formData.time,
-      duration: Number(formData.duration),
-      urgency: formData.urgency,
-      description: formData.description
+      duration: Number(formData.duration)
     };
 
     try {
@@ -159,7 +177,7 @@ export default function Agenda() {
       }
       setIsModalOpen(false);
     } catch (err) {
-      alert("Erro ao salvar. Verifique a conexão.");
+      alert("Erro ao salvar.");
     }
   };
 
@@ -175,7 +193,7 @@ export default function Agenda() {
             Agenda Jurídica
           </h2>
           <p className="text-brand-silver/50 text-sm mt-2 tracking-wide font-medium">
-            Gerencie seus compromissos sincronizados em todos os dispositivos.
+            Gerencie compromissos e atribua advogados responsáveis.
           </p>
         </div>
 
@@ -200,10 +218,18 @@ export default function Agenda() {
           <button onClick={() => { 
             setEditingId(null);
             setSelectedSlot({ date: new Date().toISOString().split('T')[0], time: '09:00' }); 
-            setFormData({ title: '', client: '', time: '09:00', duration: 60, urgency: 'Média', description: '' });
+            setFormData({ 
+              title: '', 
+              client: '', 
+              time: '09:00', 
+              duration: 60, 
+              urgency: 'Média', 
+              description: '',
+              responsible_lawyer: 'Natália' 
+            });
             setIsModalOpen(true); 
           }} className="p-2.5 bg-brand-silver/10 hover:bg-brand-silver/20 border border-brand-silver/20 text-brand-accent rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-            <Plus size={20} />
+            <Plus size(20) />
           </button>
         </div>
       </div>
@@ -257,7 +283,6 @@ export default function Agenda() {
                         className="h-24 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer group shrink-0"
                         onClick={() => openSlot(date, hour)}
                       >
-                        {/* Hover indicator */}
                         <div className="opacity-0 group-hover:opacity-100 flex items-center justify-center h-full w-full">
                           <Plus size={16} className="text-brand-silver/20" />
                         </div>
@@ -270,9 +295,8 @@ export default function Agenda() {
                       const startHour = parseInt(hourParts[0]);
                       const startMin = parseInt(hourParts[1] || '0');
                       
-                      if (startHour < 8 || startHour > 18) return null; // Outside visible range
+                      if (startHour < 8 || startHour > 18) return null;
 
-                      // Height of each hour cell is 96px (h-24)
                       const topOffset = ((startHour - 8) * 96) + ((startMin / 60) * 96);
                       const height = (appt.duration / 60) * 96;
 
@@ -281,14 +305,21 @@ export default function Agenda() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           key={appt.id}
-                          className={`absolute left-1 right-1 rounded-lg border p-2 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-md z-10 ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
-                          style={{ top: `${topOffset}px`, height: `${Math.max(height, 30)}px` }}
+                          className={`absolute left-1.5 right-1.5 rounded-xl border p-2.5 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-xl z-10 transition-all hover:scale-[1.02] flex flex-col justify-between ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
+                          style={{ top: `${topOffset}px`, height: `${Math.max(height, 46)}px` }}
                           onClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
                         >
-                          <div className="font-semibold truncate text-[10px] uppercase tracking-wide leading-tight">{appt.title}</div>
-                          {height > 40 && (
-                            <div className="opacity-70 truncate font-medium text-[10px] mt-0.5">{appt.time} • {appt.client}</div>
-                          )}
+                          <div className="flex flex-col gap-1">
+                            <div className="font-bold truncate text-[10px] uppercase tracking-wider leading-tight text-white/90">{appt.title}</div>
+                            {height > 60 && (
+                                <div className="opacity-60 truncate font-medium text-[9px] uppercase tracking-tighter">{appt.client}</div>
+                            )}
+                          </div>
+                          
+                          {/* Lawyer Badge */}
+                          <div className={`mt-auto self-start px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-widest border ${getLawyerBadge(appt.responsible_lawyer || 'Natália')}`}>
+                            {appt.responsible_lawyer || 'Natália'}
+                          </div>
                         </motion.div>
                       );
                     })}
@@ -307,7 +338,7 @@ export default function Agenda() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
@@ -326,12 +357,30 @@ export default function Agenda() {
                     </button>
                   )}
                   <button onClick={() => setIsModalOpen(false)} className="text-brand-silver/50 hover:text-white transition-colors p-1">
-                    <X size={20} />
+                    <X size(20) />
                   </button>
                 </div>
               </div>
 
               <form onSubmit={saveAppointment} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
+                {/* Lawyer Selector */}
+                <div>
+                  <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Advogado Responsável</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {['Natália', 'Denis'].map(lawyer => (
+                        <button
+                            key={lawyer}
+                            type="button"
+                            onClick={() => setFormData({...formData, responsible_lawyer: lawyer})}
+                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-bold transition-all ${formData.responsible_lawyer === lawyer ? 'bg-white/10 border-brand-accent text-brand-accent shadow-lg' : 'bg-black/20 border-white/5 text-brand-silver/40 hover:bg-white/5'}`}
+                        >
+                            <User size={14} />
+                            {lawyer}
+                        </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Título do Compromisso</label>
                   <input
