@@ -96,13 +96,13 @@ export default function Dashboard() {
         <div className="min-h-screen bg-brand-background flex flex-col md:flex-row relative overflow-hidden">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-brand-silver/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
-            
+
             {/* Sidebar Desktop */}
             <aside className="w-full md:w-72 bg-brand-surface border-r border-white/5 p-6 flex-col shrink-0 z-20 hidden md:flex shadow-2xl relative">
                 <div className="mb-12 flex justify-center pt-4">
-                    <img 
-                        src="/logo.png" 
-                        alt="Schmidt & Woloczyn" 
+                    <img
+                        src="/logo.png"
+                        alt="Schmidt & Woloczyn"
                         className="w-[200px] h-auto object-contain mix-blend-screen drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
@@ -160,15 +160,15 @@ export default function Dashboard() {
 
             {/* Mobile Header */}
             <div className="md:hidden flex justify-between items-center bg-brand-surface border-b border-white/5 p-4 z-20 relative shadow-xl">
-                 <div className="flex items-center w-32 h-8">
-                    <img 
-                        src="/logo.png" 
-                        alt="Schmidt & Woloczyn" 
+                <div className="flex items-center w-32 h-8">
+                    <img
+                        src="/logo.png"
+                        alt="Schmidt & Woloczyn"
                         className="w-full h-full object-contain object-left mix-blend-screen"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
-                 </div>
-                
+                </div>
+
                 <div className="flex items-center gap-2">
                     <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-brand-silver/60 hover:text-brand-accent"><Menu size={20} /></button>
                 </div>
@@ -177,17 +177,17 @@ export default function Dashboard() {
             {/* Mobile Menu Dropdown */}
             <AnimatePresence>
                 {mobileMenuOpen && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         className="md:hidden bg-brand-surface border-b border-white/5 z-20 relative px-4 py-2"
                     >
                         <div className="flex flex-col gap-2 pb-4">
-                            <button onClick={() => { setActiveTab('pendente'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Activity size={18}/>Pendentes</button>
-                            <button onClick={() => { setActiveTab('atendido'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'atendido' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><History size={18}/>Atendidos</button>
-                            <button onClick={() => { navigate('/analytics'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-brand-silver/50`}><BarChart3 size={18}/>Métricas</button>
-                            <button onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 mt-2 text-sm border border-red-500/10"><LogOut size={18}/>Sair</button>
+                            <button onClick={() => { setActiveTab('pendente'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Activity size={18} />Pendentes</button>
+                            <button onClick={() => { setActiveTab('atendido'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'atendido' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><History size={18} />Atendidos</button>
+                            <button onClick={() => { navigate('/analytics'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-brand-silver/50`}><BarChart3 size={18} />Métricas</button>
+                            <button onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 mt-2 text-sm border border-red-500/10"><LogOut size={18} />Sair</button>
                         </div>
                     </motion.div>
                 )}
@@ -208,7 +208,7 @@ export default function Dashboard() {
                     </header>
 
                     {/* Filters Bar */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                         className="glass-panel p-5 items-center flex flex-col md:flex-row gap-5 mb-10"
                     >
@@ -234,9 +234,9 @@ export default function Dashboard() {
                                     <option value="" className="bg-[#172229] text-white">Todas áreas</option>
                                     <option value="Trabalhista" className="bg-[#172229] text-white">Trabalhista</option>
                                     <option value="Previdenciario" className="bg-[#172229] text-white">Previdenciário</option>
-                                    <option value="Civil" className="bg-[#172229] text-white">Civil</option>
+                                    <option value="Cível" className="bg-[#172229] text-white">Cível</option>
                                     <option value="Familia" className="bg-[#172229] text-white">Família</option>
-                                    {areasUnicas.filter(a => !['Trabalhista', 'Previdenciario', 'Civil', 'Familia'].includes(a)).map(area => (
+                                    {areasUnicas.filter(a => !['Trabalhista', 'Previdenciario', 'Cível', 'Familia'].includes(a)).map(area => (
                                         <option key={area} value={area} className="bg-[#172229] text-white">{area}</option>
                                     ))}
                                 </select>
@@ -267,7 +267,7 @@ export default function Dashboard() {
                             <div className="w-8 h-8 border-2 border-brand-silver/20 border-t-brand-silver rounded-full animate-spin"></div>
                         </div>
                     ) : filteredAtendimentos.length === 0 ? (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                             className="border border-white/5 bg-black/10 rounded-3xl py-32 flex flex-col items-center justify-center backdrop-blur-sm"
                         >
@@ -279,7 +279,7 @@ export default function Dashboard() {
                             <p className="text-brand-silver/40 text-sm">Altere os filtros ou realize uma nova busca.</p>
                         </motion.div>
                     ) : (
-                        <motion.div 
+                        <motion.div
                             variants={containerVariants}
                             initial="hidden"
                             animate="show"
