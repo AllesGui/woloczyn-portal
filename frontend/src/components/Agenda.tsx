@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Mock types
@@ -10,7 +10,7 @@ interface Appointment {
   time: string; // HH:MM
   duration: number; // minutes
   client: string;
-  location?: string;
+  urgency?: string;
   description?: string;
   color?: string;
 }
@@ -20,9 +20,10 @@ export default function Agenda() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form State
-  const [formData, setFormData] = useState({ title: '', client: '', time: '09:00', duration: 60 });
+  const [formData, setFormData] = useState({ title: '', client: '', time: '09:00', duration: 60, urgency: 'Média', description: '' });
 
   // Load from local storage initially
   useEffect(() => {
@@ -32,8 +33,8 @@ export default function Agenda() {
     } else {
       // Mock data
       setAppointments([
-        { id: '1', title: 'Reunião Inicial', client: 'João Silva', date: new Date().toISOString().split('T')[0], time: '10:00', duration: 60, color: 'bg-blue-500/20 border-blue-500/30 text-blue-300' },
-        { id: '2', title: 'Assinatura', client: 'Maria Souza', date: new Date().toISOString().split('T')[0], time: '14:30', duration: 30, color: 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300' },
+        { id: '1', title: 'Reunião Inicial', client: 'João Silva', date: new Date().toISOString().split('T')[0], time: '10:00', duration: 60, urgency: 'Alta', description: 'Reunião estratégica sobre contencioso.', color: 'border-red-500/30 text-red-300' },
+        { id: '2', title: 'Assinatura', client: 'Maria Souza', date: new Date().toISOString().split('T')[0], time: '14:30', duration: 30, urgency: 'Baixa', description: 'Assinatura de honorários.', color: 'border-emerald-500/30 text-emerald-300' },
       ]);
     }
   }, []);
@@ -72,12 +73,41 @@ export default function Agenda() {
   };
 
   const openSlot = (date: Date, hour: number) => {
+    setEditingId(null);
     setSelectedSlot({
       date: date.toISOString().split('T')[0],
       time: `${hour.toString().padStart(2, '0')}:00`
     });
-    setFormData({ ...formData, time: `${hour.toString().padStart(2, '0')}:00` });
+    setFormData({ title: '', client: '', time: `${hour.toString().padStart(2, '0')}:00`, duration: 60, urgency: 'Média', description: '' });
     setIsModalOpen(true);
+  };
+
+  const openEditModal = (appt: Appointment) => {
+    setEditingId(appt.id);
+    setSelectedSlot({ date: appt.date, time: appt.time });
+    setFormData({
+      title: appt.title,
+      client: appt.client,
+      time: appt.time,
+      duration: appt.duration,
+      urgency: appt.urgency || 'Média',
+      description: appt.description || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const deleteAppointment = () => {
+    if (!editingId) return;
+    const updated = appointments.filter(a => a.id !== editingId);
+    setAppointments(updated);
+    localStorage.setItem('@woloczyn:agenda', JSON.stringify(updated));
+    setIsModalOpen(false);
+  };
+
+  const getUrgencyColor = (urgency: string) => {
+    if (urgency === 'Alta') return 'bg-red-500/20 border-red-500/30 text-red-300';
+    if (urgency === 'Média') return 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent';
+    return 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300';
   };
 
   const saveAppointment = (e: React.FormEvent) => {
@@ -85,20 +115,27 @@ export default function Agenda() {
     if (!selectedSlot) return;
 
     const newAppt: Appointment = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: editingId || Math.random().toString(36).substr(2, 9),
       title: formData.title || 'Compromisso',
       client: formData.client,
       date: selectedSlot.date,
       time: formData.time,
       duration: Number(formData.duration),
-      color: 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'
+      urgency: formData.urgency,
+      description: formData.description,
+      color: getUrgencyColor(formData.urgency)
     };
 
-    const updated = [...appointments, newAppt];
+    let updated;
+    if (editingId) {
+      updated = appointments.map(a => a.id === editingId ? newAppt : a);
+    } else {
+      updated = [...appointments, newAppt];
+    }
+
     setAppointments(updated);
     localStorage.setItem('@woloczyn:agenda', JSON.stringify(updated));
     setIsModalOpen(false);
-    setFormData({ title: '', client: '', time: '09:00', duration: 60 });
   };
 
   const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -132,7 +169,12 @@ export default function Agenda() {
               <ChevronRight size={18} />
             </button>
           </div>
-          <button onClick={() => { setSelectedSlot({ date: new Date().toISOString().split('T')[0], time: '09:00' }); setIsModalOpen(true); }} className="p-2.5 bg-brand-silver/10 hover:bg-brand-silver/20 border border-brand-silver/20 text-brand-accent rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+          <button onClick={() => { 
+            setEditingId(null);
+            setSelectedSlot({ date: new Date().toISOString().split('T')[0], time: '09:00' }); 
+            setFormData({ title: '', client: '', time: '09:00', duration: 60, urgency: 'Média', description: '' });
+            setIsModalOpen(true); 
+          }} className="p-2.5 bg-brand-silver/10 hover:bg-brand-silver/20 border border-brand-silver/20 text-brand-accent rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]">
             <Plus size={20} />
           </button>
         </div>
@@ -203,9 +245,10 @@ export default function Agenda() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       key={appt.id}
-                      className={`absolute left-1 right-1 rounded-lg border p-2 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-md z-10 ${appt.color || 'bg-white/10 border-white/20 text-white'}`}
+                      className={`absolute left-1 right-1 rounded-lg border p-2 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-md z-10 ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
                       style={{ top: `${topOffset}px`, height: `${Math.max(height, 30)}px` }}
-                      onClick={(e) => { e.stopPropagation(); /* could open detail modal here */ }}
+                      onClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
+                      onDoubleClick={(e) => { e.stopPropagation(); openEditModal(appt); }}
                     >
                       <div className="font-semibold truncate text-[10px] uppercase tracking-wide leading-tight">{appt.title}</div>
                       {height > 40 && (
@@ -236,13 +279,22 @@ export default function Agenda() {
               className="w-full max-w-md bg-brand-surface border border-white/10 rounded-2xl shadow-2xl overflow-hidden glass-panel"
             >
               <div className="flex items-center justify-between p-6 border-b border-white/5 bg-brand-background">
-                <h3 className="text-sm font-bold text-brand-accent tracking-widest uppercase">Novo Compromisso</h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-brand-silver/50 hover:text-white transition-colors">
-                  <X size={20} />
-                </button>
+                <h3 className="text-sm font-bold text-brand-accent tracking-widest uppercase">
+                  {editingId ? 'Editar Compromisso' : 'Novo Compromisso'}
+                </h3>
+                <div className="flex items-center gap-2">
+                  {editingId && (
+                    <button onClick={deleteAppointment} className="text-red-400 hover:text-red-300 transition-colors p-1" title="Excluir">
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                  <button onClick={() => setIsModalOpen(false)} className="text-brand-silver/50 hover:text-white transition-colors p-1">
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
-              <form onSubmit={saveAppointment} className="p-6 space-y-5">
+              <form onSubmit={saveAppointment} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
                 <div>
                   <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Título do Compromisso</label>
                   <input
@@ -256,7 +308,7 @@ export default function Agenda() {
                 </div>
                 
                 <div>
-                  <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Cliente / Processo</label>
+                  <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Cliente / Entidade</label>
                   <input
                     type="text"
                     value={formData.client}
@@ -274,7 +326,7 @@ export default function Agenda() {
                       required
                       value={formData.time}
                       onChange={e => setFormData({...formData, time: e.target.value})}
-                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm glass-input"
+                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm glass-input cursor-pointer"
                     />
                   </div>
                   <div>
@@ -282,21 +334,47 @@ export default function Agenda() {
                     <select
                       value={formData.duration}
                       onChange={e => setFormData({...formData, duration: Number(e.target.value)})}
-                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm appearance-none glass-input"
+                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm appearance-none glass-input cursor-pointer"
                     >
-                      <option value="30">30 minutos</option>
-                      <option value="60">1 hora</option>
-                      <option value="90">1h 30m</option>
-                      <option value="120">2 horas</option>
+                      <option value="30" className="bg-[#172229] text-white">30 minutos</option>
+                      <option value="60" className="bg-[#172229] text-white">1 hora</option>
+                      <option value="90" className="bg-[#172229] text-white">1h 30m</option>
+                      <option value="120" className="bg-[#172229] text-white">2 horas</option>
                     </select>
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Prioridade / Urgência</label>
+                    <select
+                      value={formData.urgency}
+                      onChange={e => setFormData({...formData, urgency: e.target.value})}
+                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm appearance-none glass-input cursor-pointer"
+                    >
+                      <option value="Baixa" className="bg-[#172229] text-white">Baixa</option>
+                      <option value="Média" className="bg-[#172229] text-white">Média</option>
+                      <option value="Alta" className="bg-[#172229] text-white">Alta</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-brand-silver/50 uppercase tracking-widest mb-2">Descrição / Notas</label>
+                  <textarea
+                    rows={3}
+                    value={formData.description}
+                    onChange={e => setFormData({...formData, description: e.target.value})}
+                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm glass-input resize-none"
+                    placeholder="Detalhes do compromisso, links de reunião, etc..."
+                  />
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-xl py-3.5 text-sm font-bold tracking-widest uppercase transition-all mt-4 shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                  className="w-full bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-xl py-3.5 text-sm font-bold tracking-widest uppercase transition-all mt-6 shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
                 >
-                  Confirmar Agendamento
+                  {editingId ? 'Salvar Alterações' : 'Confirmar Agendamento'}
                 </button>
               </form>
             </motion.div>
