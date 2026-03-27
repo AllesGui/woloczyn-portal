@@ -242,7 +242,7 @@ export default function Dashboard() {
                                 </select>
                             </div>
 
-                            <div className="relative flex-1 md:min-w-[160px]">
+                            <div className="relative flex-1 md:min-w-[180px]">
                                 <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-silver/40" size={16} />
                                 <select
                                     value={filterPrioridade}
