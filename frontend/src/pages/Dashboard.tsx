@@ -4,7 +4,8 @@ import { AuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
 import AtendimentoCard from '../components/AtendimentoCard';
 import AtendimentoModal from '../components/AtendimentoModal';
-import { LogOut, Search, Filter, Hexagon, History, Activity, BarChart3, Menu } from 'lucide-react';
+import Agenda from '../components/Agenda';
+import { LogOut, Search, Filter, Hexagon, History, Activity, BarChart3, Menu, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Atendimento {
@@ -24,7 +25,7 @@ interface Atendimento {
 export default function Dashboard() {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'pendente' | 'atendido'>('pendente');
+    const [activeTab, setActiveTab] = useState<'pendente' | 'atendido' | 'agenda'>('pendente');
     const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -109,6 +110,9 @@ export default function Dashboard() {
                 </div>
 
                 <nav className="flex-1 space-y-3">
+                    <div className="px-4 mb-2">
+                        <p className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest">Triagem</p>
+                    </div>
                     <button
                         onClick={() => setActiveTab('pendente')}
                         className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent shadow-inner border border-white/5' : 'text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent'}`}
@@ -127,7 +131,18 @@ export default function Dashboard() {
                         {activeTab === 'atendido' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
                     </button>
 
-                    <div className="pt-4 mt-4 border-t border-white/5">
+                    <div className="pt-4 mt-6 border-t border-white/5 space-y-3">
+                        <div className="px-4 mb-2">
+                            <p className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest">Gestão</p>
+                        </div>
+                        <button
+                            onClick={() => setActiveTab('agenda')}
+                            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide ${activeTab === 'agenda' ? 'bg-white/10 text-brand-accent shadow-inner border border-white/5' : 'text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent'}`}
+                        >
+                            <Calendar size={18} className={activeTab === 'agenda' ? 'text-brand-silver drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : ''} />
+                            Agenda
+                            {activeTab === 'agenda' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
+                        </button>
                         <button
                             onClick={() => navigate('/analytics')}
                             className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent"
@@ -184,8 +199,16 @@ export default function Dashboard() {
                         className="md:hidden bg-brand-surface border-b border-white/5 z-20 relative px-4 py-2"
                     >
                         <div className="flex flex-col gap-2 pb-4">
+                            <div className="px-4 mt-2">
+                                <p className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest">Triagem</p>
+                            </div>
                             <button onClick={() => { setActiveTab('pendente'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Activity size={18} />Pendentes</button>
                             <button onClick={() => { setActiveTab('atendido'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'atendido' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><History size={18} />Atendidos</button>
+                            <div className="h-px bg-white/5 my-2"></div>
+                            <div className="px-4">
+                                <p className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest">Gestão</p>
+                            </div>
+                            <button onClick={() => { setActiveTab('agenda'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'agenda' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Calendar size={18} />Agenda</button>
                             <button onClick={() => { navigate('/analytics'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-brand-silver/50`}><BarChart3 size={18} />Métricas</button>
                             <button onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 mt-2 text-sm border border-red-500/10"><LogOut size={18} />Sair</button>
                         </div>
@@ -195,9 +218,13 @@ export default function Dashboard() {
 
             {/* Main Content */}
             <main className="flex-1 p-6 lg:p-12 overflow-auto h-screen relative z-10">
-                <div className="max-w-6xl mx-auto pb-10">
-                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                <div className="max-w-6xl mx-auto pb-10 h-full">
+                    {activeTab === 'agenda' ? (
+                        <Agenda />
+                    ) : (
+                        <>
+                            <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                             <h2 className="text-3xl font-light text-brand-accent tracking-wide flex items-center gap-3">
                                 {activeTab === 'pendente' ? 'Triagem Pendente' : 'Histórico de Atendimentos'}
                             </h2>
@@ -297,6 +324,8 @@ export default function Dashboard() {
                                 ))}
                             </AnimatePresence>
                         </motion.div>
+                    )}
+                    </>
                     )}
                 </div>
             </main>
