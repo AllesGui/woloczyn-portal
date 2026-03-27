@@ -6,12 +6,22 @@
 
 @layer base {
   body {
-    @apply bg-brand-background text-gray-800 font-sans antialiased;
+    @apply bg-brand-background text-brand-silver font-sans antialiased selection:bg-brand-silver selection:text-brand-background;
+    background-image: radial-gradient(circle at 50% 0%, #1a202c 0%, transparent 60%);
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/40 shadow-xl;
+  .glass-panel {
+    @apply bg-black/20 backdrop-blur-xl border border-white/5 shadow-2xl rounded-2xl;
+  }
+  
+  .glass-input {
+    @apply bg-black/40 border border-white/10 text-brand-accent placeholder-brand-silver/50 focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none transition-all rounded-xl;
+  }
+  
+  .glass-button {
+    @apply bg-white/5 hover:bg-white/10 border border-white/10 text-brand-accent backdrop-blur-md transition-all rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)];
   }
 }

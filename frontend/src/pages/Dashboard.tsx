@@ -4,7 +4,8 @@ import { AuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
 import AtendimentoCard from '../components/AtendimentoCard';
 import AtendimentoModal from '../components/AtendimentoModal';
-import { LogOut, Search, Filter, LayoutDashboard, History, Activity, BarChart3 } from 'lucide-react';
+import { LogOut, Search, Filter, Hexagon, History, Activity, BarChart3, Menu } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Atendimento {
     id: string;
@@ -32,6 +33,7 @@ export default function Dashboard() {
     const [filterPrioridade, setFilterPrioridade] = useState('');
 
     const [selectedAtendimento, setSelectedAtendimento] = useState<Atendimento | null>(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const loadAtendimentos = async () => {
         try {
@@ -79,42 +81,58 @@ export default function Dashboard() {
         return matchSearch && matchArea && matchPrioridade;
     });
 
-    // Dynamic filter categories from actual data
     const areasUnicas = Array.from(new Set(atendimentos.map(a => a.area_juridica))).sort();
     const prioridadesUnicas = Array.from(new Set(atendimentos.map(a => a.prioridade)));
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-brand-background flex flex-col md:flex-row">
-            {/* Sidebar */}
-            <aside className="w-full md:w-64 bg-brand-blue text-white p-6 flex flex-col shrink-0 shadow-xl z-10 hidden md:flex">
-                <div className="mb-10 text-center md:text-left">
-                    <h1 className="text-xl font-bold tracking-tight text-brand-gold uppercase leading-tight">Schmidt <br />& Woloczyn</h1>
-                    <p className="text-xs text-white/50 font-medium tracking-widest uppercase mt-2">Sociedade de Advogados</p>
+        <div className="min-h-screen bg-brand-background flex flex-col md:flex-row relative overflow-hidden">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-brand-silver/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
+            
+            {/* Sidebar Desktop */}
+            <aside className="w-full md:w-72 bg-brand-surface border-r border-white/5 p-6 flex-col shrink-0 z-20 hidden md:flex shadow-2xl relative">
+                <div className="mb-12 text-center md:text-left flex flex-col items-center md:items-start pt-4">
+                     <div className="relative flex items-center justify-center w-14 h-14 mb-4">
+                        <Hexagon size={56} strokeWidth={1} className="text-brand-silver absolute" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="font-bold text-lg tracking-tighter text-brand-silver ml-1">S<span className="text-brand-silver/70 -ml-1">W</span></span>
+                        </div>
+                    </div>
+                    <h1 className="text-xl font-light tracking-[0.15em] text-brand-silver uppercase leading-tight">Schmidt <br />& Woloczyn</h1>
+                    <p className="text-[0.65rem] text-brand-silver/40 font-medium tracking-[0.2em] uppercase mt-2">Sociedade de Advogados</p>
                 </div>
 
-                <nav className="flex-1 space-y-2">
+                <nav className="flex-1 space-y-3">
                     <button
                         onClick={() => setActiveTab('pendente')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'pendente' ? 'bg-white/10 text-white shadow-inner' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent shadow-inner border border-white/5' : 'text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent'}`}
                     >
-                        <Activity size={18} className={activeTab === 'pendente' ? 'text-brand-gold' : ''} />
+                        <Activity size={18} className={activeTab === 'pendente' ? 'text-brand-silver drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : ''} />
                         Pendentes
-                        {activeTab === 'pendente' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-gold"></div>}
+                        {activeTab === 'pendente' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
                     </button>
 
                     <button
                         onClick={() => setActiveTab('atendido')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${activeTab === 'atendido' ? 'bg-white/10 text-white shadow-inner' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide ${activeTab === 'atendido' ? 'bg-white/10 text-brand-accent shadow-inner border border-white/5' : 'text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent'}`}
                     >
-                        <History size={18} className={activeTab === 'atendido' ? 'text-brand-gold' : ''} />
+                        <History size={18} className={activeTab === 'atendido' ? 'text-brand-silver drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : ''} />
                         Atendidos
-                        {activeTab === 'atendido' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-gold"></div>}
+                        {activeTab === 'atendido' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
                     </button>
 
-                    <div className="pt-4 mt-4 border-t border-white/10">
+                    <div className="pt-4 mt-4 border-t border-white/5">
                         <button
                             onClick={() => navigate('/analytics')}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-white/60 hover:text-white hover:bg-white/5"
+                            className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent"
                         >
                             <BarChart3 size={18} />
                             Métricas
@@ -122,19 +140,19 @@ export default function Dashboard() {
                     </div>
                 </nav>
 
-                <div className="mt-auto border-t border-white/10 pt-6">
-                    <div className="flex items-center gap-3 mb-4 px-2">
-                        <div className="w-8 h-8 rounded-full bg-brand-gold text-brand-blue flex items-center justify-center font-bold text-sm">
+                <div className="mt-auto border-t border-white/5 pt-6">
+                    <div className="flex items-center gap-3 mb-5 px-3">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-brand-silver flex items-center justify-center font-bold text-sm shadow-inner">
                             {user?.name.charAt(0)}
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-sm font-semibold truncate text-white/90">{user?.name}</p>
-                            <p className="text-xs text-white/40 truncate">{user?.email}</p>
+                            <p className="text-sm font-semibold truncate text-brand-accent">{user?.name}</p>
+                            <p className="text-xs text-brand-silver/40 truncate mt-0.5 tracking-wide">{user?.email}</p>
                         </div>
                     </div>
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-white/60 hover:text-red-400 hover:bg-red-400/10 transition-colors font-medium text-sm"
+                        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl text-brand-silver/50 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 border border-transparent transition-all font-medium text-xs tracking-widest uppercase"
                     >
                         <LogOut size={16} />
                         Sair do Sistema
@@ -142,54 +160,77 @@ export default function Dashboard() {
                 </div>
             </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 p-6 lg:p-10 overflow-auto h-screen relative">
-                {/* Mobile Header */}
-                <div className="md:hidden flex justify-between items-center mb-6 bg-brand-blue p-4 rounded-2xl text-white shadow-lg">
-                    <h1 className="font-bold text-brand-gold uppercase text-sm w-max tracking-tighter">Schmidt & Woloczyn</h1>
-                    <div className="flex items-center gap-2">
-                        <button onClick={() => navigate('/analytics')} className="p-2 text-white/60 hover:text-white"><BarChart3 size={18} /></button>
-                        <button onClick={logout} className="p-2 text-white/60 hover:text-white"><LogOut size={18} /></button>
+            {/* Mobile Header */}
+            <div className="md:hidden flex justify-between items-center bg-brand-surface border-b border-white/5 p-4 z-20 relative shadow-xl">
+                 <div className="flex items-center gap-3">
+                    <div className="relative flex items-center justify-center w-8 h-8">
+                        <Hexagon size={32} strokeWidth={1} className="text-brand-silver absolute" />
+                        <span className="font-bold text-[10px] tracking-tighter text-brand-silver absolute">SW</span>
                     </div>
+                    <h1 className="font-light tracking-[0.15em] text-brand-silver uppercase text-xs">S & W</h1>
+                 </div>
+                
+                <div className="flex items-center gap-2">
+                    <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-brand-silver/60 hover:text-brand-accent"><Menu size={20} /></button>
                 </div>
+            </div>
 
+            {/* Mobile Menu Dropdown */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="md:hidden bg-brand-surface border-b border-white/5 z-20 relative px-4 py-2"
+                    >
+                        <div className="flex flex-col gap-2 pb-4">
+                            <button onClick={() => { setActiveTab('pendente'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'pendente' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Activity size={18}/>Pendentes</button>
+                            <button onClick={() => { setActiveTab('atendido'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'atendido' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><History size={18}/>Atendidos</button>
+                            <button onClick={() => { navigate('/analytics'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-brand-silver/50`}><BarChart3 size={18}/>Métricas</button>
+                            <button onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 mt-2 text-sm border border-red-500/10"><LogOut size={18}/>Sair</button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Main Content */}
+            <main className="flex-1 p-6 lg:p-12 overflow-auto h-screen relative z-10">
                 <div className="max-w-6xl mx-auto pb-10">
-                    <header className="mb-8 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                        <div>
-                            <h2 className="text-2xl font-bold text-brand-blue tracking-tight">
+                    <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                            <h2 className="text-3xl font-light text-brand-accent tracking-wide flex items-center gap-3">
                                 {activeTab === 'pendente' ? 'Triagem Pendente' : 'Histórico de Atendimentos'}
                             </h2>
-                            <p className="text-gray-500 text-sm mt-1">
-                                {activeTab === 'pendente' ? 'Gerencie os novos contatos vindos do Telegram e priorize a fila de acordo com a predição da IA.' : 'Consulte as triagens já finalizadas.'}
+                            <p className="text-brand-silver/50 text-sm mt-2 tracking-wide font-medium">
+                                {activeTab === 'pendente' ? 'Gerencie os contatos entrantes e utilize as predições da IA.' : 'Consulte as triagens já processadas e finalizadas.'}
                             </p>
-                        </div>
-
-                        <div className="md:hidden flex bg-white p-1 rounded-lg border border-gray-200">
-                            <button onClick={() => setActiveTab('pendente')} className={`flex-1 py-1.5 text-sm font-medium rounded-md ${activeTab === 'pendente' ? 'bg-brand-blue text-white' : 'text-gray-500'}`}>Pendentes</button>
-                            <button onClick={() => setActiveTab('atendido')} className={`flex-1 py-1.5 text-sm font-medium rounded-md ${activeTab === 'atendido' ? 'bg-brand-blue text-white' : 'text-gray-500'}`}>Atendidos</button>
-                        </div>
+                        </motion.div>
                     </header>
 
                     {/* Filters Bar */}
-                    <div className="bg-white p-4 items-center rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 mb-8">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                        className="glass-panel p-5 items-center flex flex-col md:flex-row gap-5 mb-10"
+                    >
                         <div className="flex-1 relative w-full">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-silver/40" size={18} />
                             <input
                                 type="text"
-                                placeholder="Buscar por nome, telefone ou resumo..."
+                                placeholder="Buscar por cliente, telefone..."
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-brand-gold outline-none text-sm transition-shadow"
+                                className="w-full pl-11 pr-4 py-3 glass-input text-sm"
                             />
                         </div>
 
                         <div className="flex gap-4 w-full md:w-auto">
-                            <div className="relative flex-1 md:min-w-[160px]">
-                                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            <div className="relative flex-1 md:min-w-[170px]">
+                                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-silver/40" size={16} />
                                 <select
                                     value={filterArea}
                                     onChange={e => setFilterArea(e.target.value)}
-                                    className="w-full pl-9 pr-8 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-brand-gold outline-none text-sm appearance-none"
+                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface"
                                 >
                                     <option value="">Todas áreas</option>
                                     {areasUnicas.map(area => (
@@ -198,12 +239,12 @@ export default function Dashboard() {
                                 </select>
                             </div>
 
-                            <div className="relative flex-1 md:min-w-[150px]">
-                                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            <div className="relative flex-1 md:min-w-[160px]">
+                                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-silver/40" size={16} />
                                 <select
                                     value={filterPrioridade}
                                     onChange={e => setFilterPrioridade(e.target.value)}
-                                    className="w-full pl-9 pr-8 py-2.5 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-brand-gold outline-none text-sm appearance-none"
+                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface"
                                 >
                                     <option value="">Prioridade</option>
                                     {prioridadesUnicas.map(p => (
@@ -212,33 +253,44 @@ export default function Dashboard() {
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Cards Grid */}
                     {loading ? (
-                        <div className="flex justify-center items-center py-20">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-gold"></div>
+                        <div className="flex justify-center items-center py-32">
+                            <div className="w-8 h-8 border-2 border-brand-silver/20 border-t-brand-silver rounded-full animate-spin"></div>
                         </div>
                     ) : filteredAtendimentos.length === 0 ? (
-                        <div className="bg-white border text-center border-dashed border-gray-300 rounded-2xl py-20 flex flex-col items-center justify-center">
-                            <div className="w-16 h-16 bg-brand-background rounded-full mb-4 flex items-center justify-center text-gray-400">
-                                <LayoutDashboard size={24} />
+                        <motion.div 
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                            className="border border-white/5 bg-black/10 rounded-3xl py-32 flex flex-col items-center justify-center backdrop-blur-sm"
+                        >
+                            <div className="relative flex items-center justify-center w-16 h-16 mb-6">
+                                <Hexagon size={64} strokeWidth={0.5} className="text-brand-silver/20 absolute" />
+                                <Search size={24} className="text-brand-silver/40" />
                             </div>
-                            <h3 className="text-lg font-semibold text-brand-blue mb-1">Nenhum atendimento</h3>
-                            <p className="text-gray-500 text-sm">Não foi encontrado nenhum card para os filtros selecionados.</p>
-                        </div>
+                            <h3 className="text-lg font-medium text-brand-accent mb-2 tracking-wide uppercase">Nenhum registro encontrado</h3>
+                            <p className="text-brand-silver/40 text-sm">Altere os filtros ou realize uma nova busca.</p>
+                        </motion.div>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredAtendimentos.map(atendimento => (
-                                <AtendimentoCard
-                                    key={atendimento.id}
-                                    atendimento={atendimento}
-                                    onFinalizar={activeTab === 'pendente' ? handleFinalizar : undefined}
-                                    onReabrir={activeTab === 'atendido' ? handleReabrir : undefined}
-                                    onOpenDetail={setSelectedAtendimento}
-                                />
-                            ))}
-                        </div>
+                        <motion.div 
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+                        >
+                            <AnimatePresence>
+                                {filteredAtendimentos.map(atendimento => (
+                                    <AtendimentoCard
+                                        key={atendimento.id}
+                                        atendimento={atendimento}
+                                        onFinalizar={activeTab === 'pendente' ? handleFinalizar : undefined}
+                                        onReabrir={activeTab === 'atendido' ? handleReabrir : undefined}
+                                        onOpenDetail={setSelectedAtendimento}
+                                    />
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
                     )}
                 </div>
             </main>

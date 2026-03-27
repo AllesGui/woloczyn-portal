@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -8,9 +7,10 @@ import {
 } from 'recharts';
 import {
     ArrowLeft, Clock,
-    CalendarDays, BarChart3, Target, Zap, Wallet,
-    ArrowUpRight, Info
+    CalendarDays, Target, Zap, Wallet,
+    ArrowUpRight, Info, Hexagon
 } from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
 
 interface Stats {
     summary: {
@@ -27,10 +27,9 @@ interface Stats {
     areas: { area: string; count: number }[];
 }
 
-const COLORS = ['#0a1d37', '#c9a15b', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
+const COLORS = ['#e5e7eb', '#9ca3af', '#d1d5db', '#6b7280', '#f3f4f6', '#4b5563'];
 
 export default function Analytics() {
-    const { } = useContext(AuthContext);
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -51,10 +50,13 @@ export default function Analytics() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div>
-                    <p className="text-brand-blue font-medium animate-pulse">Carregando inteligência...</p>
+            <div className="min-h-screen bg-brand-background flex items-center justify-center">
+                <div className="flex flex-col items-center gap-6">
+                    <div className="relative flex items-center justify-center">
+                        <Hexagon size={64} strokeWidth={0.5} className="text-brand-silver animate-[spin_4s_linear_infinite]" />
+                        <div className="w-8 h-8 rounded-full border-t-2 border-brand-accent animate-spin absolute"></div>
+                    </div>
+                    <p className="text-brand-silver/50 font-medium tracking-[0.2em] uppercase text-xs animate-pulse">Carregando inteligência...</p>
                 </div>
             </div>
         );
@@ -62,8 +64,8 @@ export default function Analytics() {
 
     if (!stats) {
         return (
-            <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
-                <p className="text-gray-500">Sem dados operacionais para análise</p>
+            <div className="min-h-screen bg-brand-background flex items-center justify-center">
+                <p className="text-brand-silver/40 tracking-wider">Sem dados operacionais para análise</p>
             </div>
         );
     }
@@ -74,9 +76,9 @@ export default function Analytics() {
     }));
 
     const funnelData = [
-        { name: 'Contatos', value: stats.summary.total, fill: '#0a1d37' },
-        { name: 'Em Triagem', value: stats.summary.pending, fill: '#3b82f6' },
-        { name: 'Convertidos', value: stats.summary.attended, fill: '#10b981' },
+        { name: 'Contatos', value: stats.summary.total, fill: '#ffffff' },
+        { name: 'Em Triagem', value: stats.summary.pending, fill: '#9ca3af' },
+        { name: 'Convertidos', value: stats.summary.attended, fill: '#4b5563' },
     ];
 
     const formatCurrency = (value: number) => {
@@ -87,229 +89,283 @@ export default function Analytics() {
         }).format(value);
     };
 
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, scale: 0.95, y: 10 },
+        show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 15 } }
+    };
+
     return (
-        <div className="min-h-screen bg-[#f8fafc]">
+        <div className="min-h-screen bg-brand-background relative overflow-hidden">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-brand-silver/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
+            <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-brand-silver/5 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
             {/* Header */}
-            <header className="bg-brand-blue text-white p-8 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
+            <header className="relative z-10 p-6 lg:p-10 border-b border-white/5 bg-black/20 backdrop-blur-md">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
                         <button
                             onClick={() => navigate('/')}
-                            className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all duration-300 backdrop-blur-md group"
+                            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all duration-300 border border-white/5 text-brand-silver group"
                         >
-                            <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
+                            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         </button>
                         <div>
                             <div className="flex items-center gap-3">
-                                <div className="bg-brand-gold p-2 rounded-lg">
-                                    <BarChart3 size={24} className="text-brand-blue" />
-                                </div>
-                                <h1 className="text-2xl font-bold tracking-tight">Estatísticas Estratégicas</h1>
+                                <h1 className="text-3xl font-light text-brand-accent tracking-wide">Inteligência Operacional</h1>
                             </div>
-                            <p className="text-white/60 text-sm mt-1 font-medium italic">Análise de performance e potencial jurídico</p>
+                            <p className="text-brand-silver/50 text-sm mt-1 font-medium tracking-wide">Análise de performance e potencial jurídico da banca.</p>
+                        </div>
+                    </div>
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="relative flex items-center justify-center w-10 h-10">
+                            <Hexagon size={40} strokeWidth={1} className="text-brand-silver absolute" />
+                            <span className="font-bold text-[10px] tracking-tighter text-brand-silver absolute">SW</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="font-light tracking-[0.15em] text-brand-silver uppercase text-xs leading-none">Schmidt & Woloczyn</span>
+                            <span className="text-[8px] text-brand-silver/40 font-medium tracking-[0.2em] uppercase mt-1">Analytics</span>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto p-6 lg:p-10 -mt-6">
+            <main className="max-w-7xl mx-auto p-6 lg:p-10 relative z-10">
                 {/* Advanced KPI Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     {/* Potential Value */}
-                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <Wallet size={80} className="text-brand-blue" />
+                    <motion.div variants={itemVariants} className="glass-panel p-8 relative overflow-hidden group hover:border-white/20 transition-all duration-500">
+                        <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                            <Wallet size={100} className="text-brand-silver" />
                         </div>
                         <div className="relative z-10">
-                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                            <div className="flex items-center gap-2 text-brand-silver/60 font-bold text-xs mb-4 uppercase tracking-widest">
                                 <Wallet size={16} />
                                 Potencial de Carteira
                             </div>
-                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                            <p className="text-3xl font-light text-brand-accent mb-2 tracking-tight">
                                 {formatCurrency(stats.summary.potentialValue ?? 0)}
                             </p>
-                            <div className="flex items-center gap-2 text-green-600 font-bold text-xs bg-green-50 w-fit px-3 py-1 rounded-full">
-                                <ArrowUpRight size={14} />
+                            <div className="flex items-center gap-2 text-emerald-400 font-bold text-[10px] bg-emerald-500/10 border border-emerald-500/20 w-fit px-3 py-1.5 rounded-full uppercase tracking-widest">
+                                <ArrowUpRight size={12} />
                                 Estimativa Gerencial
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Conversion Rate */}
-                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <Target size={80} className="text-brand-blue" />
+                    <motion.div variants={itemVariants} className="glass-panel p-8 relative overflow-hidden group hover:border-white/20 transition-all duration-500">
+                        <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                            <Target size={100} className="text-brand-silver" />
                         </div>
                         <div className="relative z-10">
-                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                            <div className="flex items-center gap-2 text-brand-silver/60 font-bold text-xs mb-4 uppercase tracking-widest">
                                 <Target size={16} />
                                 Taxa de Conversão
                             </div>
-                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                            <p className="text-3xl font-light text-brand-accent mb-2 tracking-tight">
                                 {stats.summary.conversionRate ?? 0}%
                             </p>
-                            <p className="text-gray-400 text-xs font-medium">Contatos convertidos em atendimentos</p>
+                            <p className="text-brand-silver/40 text-xs font-medium tracking-wide">Contatos convertidos em atendimentos</p>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Efficiency */}
-                    <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <Zap size={80} className="text-brand-blue" />
+                    <motion.div variants={itemVariants} className="glass-panel p-8 relative overflow-hidden group hover:border-white/20 transition-all duration-500">
+                        <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
+                            <Zap size={100} className="text-brand-silver" />
                         </div>
                         <div className="relative z-10">
-                            <div className="flex items-center gap-2 text-brand-blue font-bold text-sm mb-4 uppercase tracking-wider">
+                            <div className="flex items-center gap-2 text-brand-silver/60 font-bold text-xs mb-4 uppercase tracking-widest">
                                 <Zap size={16} />
-                                Eficiência Operacional
+                                Eficiência Média
                             </div>
-                            <p className="text-4xl font-extrabold text-brand-blue mb-2">
+                            <p className="text-3xl font-light text-brand-accent mb-2 tracking-tight">
                                 {stats.summary.avgResponseHours ?? 0}h
                             </p>
-                            <p className="text-gray-400 text-xs font-medium">Tempo médio para finalização</p>
+                            <p className="text-brand-silver/40 text-xs font-medium tracking-wide">Tempo médio para finalização</p>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Funnel Recap */}
-                    <div className="bg-brand-blue rounded-[2rem] p-8 shadow-xl border border-white/10 relative overflow-hidden group">
+                    <motion.div variants={itemVariants} className="glass-panel bg-white/5 border border-white/20 p-8 relative overflow-hidden group shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]">
                         <div className="flex flex-col h-full justify-between">
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center text-white/60 text-xs font-bold uppercase">
-                                    <span>Funnel de hoje</span>
+                            <div className="space-y-4 relative z-10">
+                                <div className="flex justify-between items-center text-brand-silver/60 text-[10px] font-bold uppercase tracking-widest">
+                                    <span>Funil de hoje</span>
                                     <Clock size={14} />
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     <div className="flex justify-between items-end">
-                                        <span className="text-white/80 text-sm font-medium">Total Contatos</span>
-                                        <span className="text-white text-xl font-bold">{stats.summary.total}</span>
+                                        <span className="text-brand-silver/80 text-sm font-medium">Total Contatos</span>
+                                        <span className="text-brand-accent text-xl font-light">{stats.summary.total}</span>
                                     </div>
-                                    <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                                        <div className="bg-brand-gold h-full" style={{ width: '100%' }}></div>
+                                    <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                                        <div className="bg-brand-silver h-full" style={{ width: '100%' }}></div>
                                     </div>
                                     <div className="flex justify-between items-end">
-                                        <span className="text-white/80 text-sm font-medium">Convertidos</span>
-                                        <span className="text-brand-gold text-xl font-bold">{stats.summary.attended}</span>
+                                        <span className="text-brand-silver/80 text-sm font-medium">Convertidos</span>
+                                        <span className="text-brand-silver text-xl font-light">{stats.summary.attended}</span>
                                     </div>
-                                    <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                                        <div className="bg-green-400 h-full" style={{ width: `${stats.summary.conversionRate}%` }}></div>
+                                    <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                                        <div className="bg-emerald-400/80 h-full" style={{ width: `${stats.summary.conversionRate}%` }}></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Chart: Volume Trend */}
-                    <div className="lg:col-span-2 bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
+                    <motion.div variants={itemVariants} className="lg:col-span-2 glass-panel p-8 lg:p-10">
                         <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-lg font-bold text-brand-blue">Tendência de Volume</h3>
-                            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 px-4 py-2 rounded-xl">
+                            <h3 className="text-xl font-light text-brand-accent tracking-wide flex items-center gap-3">
+                                <Hexagon size={18} className="text-brand-silver/40"/>
+                                Tendência de Volume
+                            </h3>
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-brand-silver/60 bg-white/5 border border-white/10 px-4 py-2 rounded-xl uppercase tracking-widest">
                                 <CalendarDays size={14} />
                                 ÚLTIMOS 30 DIAS
                             </div>
                         </div>
                         {dailyFormatted.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={320}>
-                                <AreaChart data={dailyFormatted}>
-                                    <defs>
-                                        <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#c9a15b" stopOpacity={0.4} />
-                                            <stop offset="95%" stopColor="#c9a15b" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="5 5" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis
-                                        dataKey="date"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fontSize: 12, fill: '#64748b', fontWeight: 500 }}
-                                        dy={10}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        allowDecimals={false}
-                                        tick={{ fontSize: 12, fill: '#64748b', fontWeight: 500 }}
-                                    />
-                                    <Tooltip
-                                        contentStyle={{
-                                            borderRadius: '16px',
-                                            border: 'none',
-                                            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                                            padding: '12px'
-                                        }}
-                                        itemStyle={{ color: '#0a1d37', fontWeight: 700 }}
-                                    />
-                                    <Area type="monotone" dataKey="count" stroke="#c9a15b" strokeWidth={4} fill="url(#colorCount)" name="Leads" />
-                                </AreaChart>
-                            </ResponsiveContainer>
+                            <div className="w-full h-[320px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={dailyFormatted}>
+                                        <defs>
+                                            <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#ffffff" stopOpacity={0.15} />
+                                                <stop offset="95%" stopColor="#ffffff" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                                        <XAxis
+                                            dataKey="date"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.4)', fontWeight: 500 }}
+                                            dy={10}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            allowDecimals={false}
+                                            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.4)', fontWeight: 500 }}
+                                            dx={-10}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                borderRadius: '16px',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                backgroundColor: 'rgba(10, 10, 10, 0.8)',
+                                                backdropFilter: 'blur(12px)',
+                                                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                                                padding: '12px 16px',
+                                                color: '#e2e8f0'
+                                            }}
+                                            itemStyle={{ color: '#fff', fontWeight: 600 }}
+                                        />
+                                        <Area type="monotone" dataKey="count" stroke="#ffffff" strokeWidth={3} fill="url(#colorCount)" name="Leads" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         ) : (
-                            <div className="h-[320px] flex items-center justify-center text-gray-400">Aguardando novos leads...</div>
+                            <div className="h-[320px] flex items-center justify-center text-brand-silver/40">Aguardando novos leads...</div>
                         )}
-                    </div>
+                    </motion.div>
 
                     {/* Funnel Visual */}
-                    <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
-                        <h3 className="text-lg font-bold text-brand-blue mb-8">Funnel de Conversão</h3>
-                        <ResponsiveContainer width="100%" height={320}>
-                            <BarChart data={funnelData} layout="vertical" barSize={35} margin={{ left: 10, right: 30 }}>
-                                <XAxis type="number" hide />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    width={100}
-                                    tick={{ fill: '#0a1d37', fontWeight: 600, fontSize: 12 }}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: '#f8fafc' }}
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
-                                />
-                                <Bar dataKey="value" radius={[0, 20, 20, 0]}>
-                                    {funnelData.map((entry, index) => (
-                                        <Cell key={index} fill={entry.fill} />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
-                        <div className="mt-4 pt-6 border-t border-gray-50 flex items-center gap-3 text-brand-blue/60 italic text-xs leading-relaxed">
-                            <Info size={16} />
+                    <motion.div variants={itemVariants} className="glass-panel p-8 lg:p-10 flex flex-col">
+                        <h3 className="text-xl font-light text-brand-accent tracking-wide flex items-center gap-3 mb-8">
+                            <Hexagon size={18} className="text-brand-silver/40"/>
+                            Funil de Conversão
+                        </h3>
+                        <div className="flex-1 w-full min-h-[250px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={funnelData} layout="vertical" barSize={24} margin={{ left: 0, right: 30, top: 20, bottom: 20 }}>
+                                    <XAxis type="number" hide />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        width={90}
+                                        tick={{ fill: 'rgba(255,255,255,0.6)', fontWeight: 500, fontSize: 11 }}
+                                    />
+                                    <Tooltip
+                                        cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                                        contentStyle={{ 
+                                            borderRadius: '12px', 
+                                            border: '1px solid rgba(255,255,255,0.1)', 
+                                            backgroundColor: 'rgba(10, 10, 10, 0.8)',
+                                            backdropFilter: 'blur(12px)',
+                                            color: '#fff'
+                                        }}
+                                    />
+                                    <Bar dataKey="value" radius={[0, 12, 12, 0]}>
+                                        {funnelData.map((entry, index) => (
+                                            <Cell key={index} fill={entry.fill} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="mt-6 pt-6 border-t border-white/5 flex items-center gap-3 text-brand-silver/40 italic text-xs leading-relaxed">
+                            <Info size={16} className="shrink-0" />
                             <p>O funil representa o fluxo vital do escritório, desde a prospecção inicial até o fechamento contratual.</p>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
 
                 {/* Bottom Row: Areas Ranking */}
-                <div className="mt-8 bg-white rounded-[2rem] p-10 shadow-sm border border-gray-100">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="mt-8 glass-panel p-8 lg:p-10 mb-10">
                     <div className="flex items-center justify-between mb-10">
                         <div>
-                            <h3 className="text-lg font-bold text-brand-blue">Performance por Área Jurídica</h3>
-                            <p className="text-gray-400 text-sm mt-1">Quais áreas estão gerando mais solicitações</p>
+                            <h3 className="text-xl font-light text-brand-accent tracking-wide flex items-center gap-3">
+                                <Hexagon size={18} className="text-brand-silver/40"/>
+                                Performance por Área Jurídica
+                            </h3>
+                            <p className="text-brand-silver/40 text-sm mt-2 font-medium tracking-wide">Volume absoluto de solicitações segmentado por especialidade</p>
                         </div>
                     </div>
                     {stats.areas.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={stats.areas}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="area" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                                <Tooltip
-                                    cursor={{ fill: '#f8fafc' }}
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                                />
-                                <Bar dataKey="count" name="Contatos" radius={[10, 10, 0, 0]} barSize={50}>
-                                    {stats.areas.map((_, index) => (
-                                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                        <div className="w-full h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={stats.areas} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                                    <XAxis dataKey="area" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.4)', fontWeight: 500 }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.4)', fontWeight: 500 }} />
+                                    <Tooltip
+                                        cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                                        contentStyle={{ 
+                                            borderRadius: '16px', 
+                                            border: '1px solid rgba(255,255,255,0.1)', 
+                                            backgroundColor: 'rgba(10, 10, 10, 0.8)',
+                                            backdropFilter: 'blur(12px)',
+                                            color: '#fff'
+                                        }}
+                                    />
+                                    <Bar dataKey="count" name="Contatos" radius={[8, 8, 0, 0]} barSize={40}>
+                                        {stats.areas.map((_, index) => (
+                                            <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     ) : (
-                        <div className="h-[300px] flex items-center justify-center text-gray-400">Dados indisponíveis</div>
+                        <div className="h-[300px] flex items-center justify-center text-brand-silver/40">Dados indisponíveis</div>
                     )}
-                </div>
+                </motion.div>
             </main>
         </div>
     );
