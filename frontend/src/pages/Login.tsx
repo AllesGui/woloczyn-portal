@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Lock, Mail, Hexagon } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -47,33 +47,18 @@ export default function Login() {
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                        className="relative mb-6"
+                        className="relative w-full flex justify-center"
                     >
-                        {/* Custom SW Hexagon Logo Representation */}
-                        <div className="relative flex items-center justify-center w-20 h-20">
-                            <Hexagon size={80} strokeWidth={1} className="text-brand-silver absolute animate-glow" />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="font-bold text-2xl tracking-tighter text-brand-silver ml-1">S<span className="text-brand-silver/70 -ml-1">W</span></span>
-                            </div>
-                        </div>
+                        <img 
+                            src="/logo.png" 
+                            alt="Schmidt & Woloczyn" 
+                            className="w-[280px] h-auto object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement!.innerHTML = '<div class="text-brand-silver/40 text-xs border border-dashed border-white/20 p-8 rounded-xl text-center">Salve a sua logo como<br/><b class="text-brand-silver">frontend/public/logo.png</b></div>';
+                            }}
+                        />
                     </motion.div>
-                    
-                    <motion.h1 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                        className="text-2xl font-light tracking-[0.15em] text-brand-silver uppercase text-center leading-tight mb-2"
-                    >
-                        Schmidt &<br />Woloczyn
-                    </motion.h1>
-                    <motion.p 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4, duration: 0.8 }}
-                        className="text-[0.65rem] font-medium text-brand-silver/40 tracking-[0.3em] uppercase"
-                    >
-                        Sociedade de Advogados
-                    </motion.p>
                 </div>
 
                 {error && (

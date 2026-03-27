@@ -99,15 +99,13 @@ export default function Dashboard() {
             
             {/* Sidebar Desktop */}
             <aside className="w-full md:w-72 bg-brand-surface border-r border-white/5 p-6 flex-col shrink-0 z-20 hidden md:flex shadow-2xl relative">
-                <div className="mb-12 text-center md:text-left flex flex-col items-center md:items-start pt-4">
-                     <div className="relative flex items-center justify-center w-14 h-14 mb-4">
-                        <Hexagon size={56} strokeWidth={1} className="text-brand-silver absolute" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="font-bold text-lg tracking-tighter text-brand-silver ml-1">S<span className="text-brand-silver/70 -ml-1">W</span></span>
-                        </div>
-                    </div>
-                    <h1 className="text-xl font-light tracking-[0.15em] text-brand-silver uppercase leading-tight">Schmidt <br />& Woloczyn</h1>
-                    <p className="text-[0.65rem] text-brand-silver/40 font-medium tracking-[0.2em] uppercase mt-2">Sociedade de Advogados</p>
+                <div className="mb-12 flex justify-center pt-4">
+                    <img 
+                        src="/logo.png" 
+                        alt="Schmidt & Woloczyn" 
+                        className="w-[200px] h-auto object-contain mix-blend-screen drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
                 </div>
 
                 <nav className="flex-1 space-y-3">
@@ -162,12 +160,13 @@ export default function Dashboard() {
 
             {/* Mobile Header */}
             <div className="md:hidden flex justify-between items-center bg-brand-surface border-b border-white/5 p-4 z-20 relative shadow-xl">
-                 <div className="flex items-center gap-3">
-                    <div className="relative flex items-center justify-center w-8 h-8">
-                        <Hexagon size={32} strokeWidth={1} className="text-brand-silver absolute" />
-                        <span className="font-bold text-[10px] tracking-tighter text-brand-silver absolute">SW</span>
-                    </div>
-                    <h1 className="font-light tracking-[0.15em] text-brand-silver uppercase text-xs">S & W</h1>
+                 <div className="flex items-center w-32 h-8">
+                    <img 
+                        src="/logo.png" 
+                        alt="Schmidt & Woloczyn" 
+                        className="w-full h-full object-contain object-left mix-blend-screen"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
                  </div>
                 
                 <div className="flex items-center gap-2">

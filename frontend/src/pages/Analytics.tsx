@@ -125,15 +125,15 @@ export default function Analytics() {
                             <p className="text-brand-silver/50 text-sm mt-1 font-medium tracking-wide">Análise de performance e potencial jurídico da banca.</p>
                         </div>
                     </div>
-                    <div className="hidden md:flex items-center gap-3">
-                        <div className="relative flex items-center justify-center w-10 h-10">
-                            <Hexagon size={40} strokeWidth={1} className="text-brand-silver absolute" />
-                            <span className="font-bold text-[10px] tracking-tighter text-brand-silver absolute">SW</span>
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="font-light tracking-[0.15em] text-brand-silver uppercase text-xs leading-none">Schmidt & Woloczyn</span>
-                            <span className="text-[8px] text-brand-silver/40 font-medium tracking-[0.2em] uppercase mt-1">Analytics</span>
-                        </div>
+                    <div className="hidden md:flex items-center gap-4">
+                        <img 
+                            src="/logo.png" 
+                            alt="Schmidt & Woloczyn" 
+                            className="w-32 object-contain mix-blend-screen"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                        <div className="h-8 w-px bg-white/10"></div>
+                        <span className="text-[10px] text-brand-silver/40 font-bold tracking-[0.2em] uppercase">Analytics</span>
                     </div>
                 </div>
             </header>
