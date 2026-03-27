@@ -34,8 +34,14 @@ const initTable = async () => {
                 duration INTEGER NOT NULL,
                 urgency VARCHAR(50),
                 description TEXT,
+                responsible_lawyer VARCHAR(100),
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
+        `);
+        
+        // Adicionar a coluna caso a tabela já exista sem ela
+        await db.query(`
+            ALTER TABLE agenda_events ADD COLUMN IF NOT EXISTS responsible_lawyer VARCHAR(100);
         `);
         console.log("✅ Tabela agenda_events verificada/criada.");
     } catch (err) {

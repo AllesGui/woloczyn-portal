@@ -11,11 +11,11 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
-    const { title, client, date, time, duration, urgency, description } = req.body;
+    const { title, client, date, time, duration, urgency, description, responsible_lawyer } = req.body;
     try {
         const result = await db.query(
-            'INSERT INTO agenda_events (title, client, date, time, duration, urgency, description) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [title, client, date, time, duration, urgency, description]
+            'INSERT INTO agenda_events (title, client, date, time, duration, urgency, description, responsible_lawyer) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+            [title, client, date, time, duration, urgency, description, responsible_lawyer]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -26,11 +26,11 @@ exports.createEvent = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     const { id } = req.params;
-    const { title, client, date, time, duration, urgency, description } = req.body;
+    const { title, client, date, time, duration, urgency, description, responsible_lawyer } = req.body;
     try {
         const result = await db.query(
-            'UPDATE agenda_events SET title = $1, client = $2, date = $3, time = $4, duration = $5, urgency = $6, description = $7 WHERE id = $8 RETURNING *',
-            [title, client, date, time, duration, urgency, description, id]
+            'UPDATE agenda_events SET title = $1, client = $2, date = $3, time = $4, duration = $5, urgency = $6, description = $7, responsible_lawyer = $8 WHERE id = $9 RETURNING *',
+            [title, client, date, time, duration, urgency, description, responsible_lawyer, id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Evento não encontrado' });
