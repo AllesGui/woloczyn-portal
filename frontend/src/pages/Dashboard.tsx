@@ -229,11 +229,15 @@ export default function Dashboard() {
                                 <select
                                     value={filterArea}
                                     onChange={e => setFilterArea(e.target.value)}
-                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface"
+                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface text-brand-silver focus:text-white"
                                 >
-                                    <option value="">Todas áreas</option>
-                                    {areasUnicas.map(area => (
-                                        <option key={area} value={area}>{area}</option>
+                                    <option value="" className="bg-[#172229] text-white">Todas áreas</option>
+                                    <option value="Trabalhista" className="bg-[#172229] text-white">Trabalhista</option>
+                                    <option value="Previdenciario" className="bg-[#172229] text-white">Previdenciário</option>
+                                    <option value="Civil" className="bg-[#172229] text-white">Civil</option>
+                                    <option value="Familia" className="bg-[#172229] text-white">Família</option>
+                                    {areasUnicas.filter(a => !['Trabalhista', 'Previdenciario', 'Civil', 'Familia'].includes(a)).map(area => (
+                                        <option key={area} value={area} className="bg-[#172229] text-white">{area}</option>
                                     ))}
                                 </select>
                             </div>
@@ -243,11 +247,14 @@ export default function Dashboard() {
                                 <select
                                     value={filterPrioridade}
                                     onChange={e => setFilterPrioridade(e.target.value)}
-                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface"
+                                    className="w-full pl-11 pr-8 py-3 glass-input text-sm appearance-none bg-brand-surface text-brand-silver focus:text-white"
                                 >
-                                    <option value="">Prioridade</option>
-                                    {prioridadesUnicas.map(p => (
-                                        <option key={p} value={p}>{p}</option>
+                                    <option value="" className="bg-[#172229] text-white">Todas Prioridades</option>
+                                    <option value="Alta" className="bg-[#172229] text-white">Alta</option>
+                                    <option value="Media" className="bg-[#172229] text-white">Média</option>
+                                    <option value="Baixa" className="bg-[#172229] text-white">Baixa</option>
+                                    {prioridadesUnicas.filter(p => !['Alta', 'Media', 'Baixa'].includes(p)).map(p => (
+                                        <option key={p} value={p} className="bg-[#172229] text-white">{p}</option>
                                     ))}
                                 </select>
                             </div>
