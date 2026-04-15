@@ -9,26 +9,7 @@ const statsRoutes = require('./routes/stats.routes');
 const agendaRoutes = require('./routes/agenda.routes');
 
 const app = express();
-//adicionei isso
-const allowedOrigins = [
-    'https://www.schmidtwoloczyn.com.br',
-    'https://schmidtwoloczyn.com.br',
-    'https://woloczyn-portal.vercel.app',
-    'http://localhost:5173'
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // permitir requisições sem origin (como mobile apps ou curl)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true
-}));
+app.use(cors());
 
 app.use(express.json());
 
