@@ -9,8 +9,8 @@ const statsRoutes = require('./routes/stats.routes');
 const agendaRoutes = require('./routes/agenda.routes');
 
 const app = express();
-app.use(cors());
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -38,7 +38,7 @@ const initTable = async () => {
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `);
-
+        
         // Adicionar a coluna caso a tabela já exista sem ela
         await db.query(`
             ALTER TABLE agenda_events ADD COLUMN IF NOT EXISTS responsible_lawyer VARCHAR(100);
@@ -50,11 +50,6 @@ const initTable = async () => {
 };
 initTable();
 
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT} (Local Mode)`);
-    });
-}
-
-// Export for Vercel Serverless Functions
-module.exports = app;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
