@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Plus, X, Trash2, Loader2, RefreshCcw, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import api from '../services/api';
 
 // Types matched with DB
@@ -332,8 +332,7 @@ export default function Agenda() {
       </div>
 
       {/* Appointment Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
+      {isModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -466,7 +465,6 @@ export default function Agenda() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
     </motion.div>
   );
 }
