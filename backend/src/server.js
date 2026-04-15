@@ -10,7 +10,10 @@ const agendaRoutes = require('./routes/agenda.routes');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -50,6 +53,10 @@ const initTable = async () => {
 };
 initTable();
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
