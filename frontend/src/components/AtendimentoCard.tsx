@@ -1,4 +1,4 @@
-import { Clock, Phone, Tag, CheckCircle2, Send, RotateCcw, Eye, Hexagon } from 'lucide-react';
+import { Clock, Phone, Tag, CheckCircle2, RotateCcw, Eye, Hexagon } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
@@ -36,16 +36,11 @@ export default memo(function AtendimentoCard({ atendimento, onFinalizar, onReabr
     };
 
     const priorityBadge = priorityColors[atendimento.prioridade] || 'bg-brand-silver/10 text-brand-silver border-brand-silver/20';
-    const hasTelegram = !!atendimento.telegram_chat_id;
-
-    const openTelegram = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        window.open(`https://web.telegram.org/k/#${atendimento.telegram_chat_id}`, '_blank');
-    };
 
     const openWhatsApp = (e: React.MouseEvent) => {
         e.stopPropagation();
-        window.open(`https://wa.me/${atendimento.telefone}`, '_blank');
+        const whatsappNumber = atendimento.telegram_chat_id?.split('@')[0] || atendimento.telefone;
+        window.open(`https://wa.me/${whatsappNumber}`, '_blank');
     };
 
     return (
@@ -64,23 +59,13 @@ export default memo(function AtendimentoCard({ atendimento, onFinalizar, onReabr
                 <div className="flex-1 pr-4">
                     <h3 className="text-lg font-semibold text-brand-accent group-hover:text-brand-silver transition-colors tracking-tight">{atendimento.nome}</h3>
                     <div className="flex items-center gap-2 mt-2">
-                        {hasTelegram ? (
-                            <button
-                                onClick={openTelegram}
-                                className="flex items-center gap-2 text-xs font-medium text-brand-silver/50 hover:text-blue-400 transition-colors group/btn bg-white/5 hover:bg-white/10 border border-white/5 py-1 px-2.5 rounded-lg w-max"
-                            >
-                                <Send size={12} className="group-hover/btn:text-blue-400" />
-                                Telegram
-                            </button>
-                        ) : (
-                            <button
-                                onClick={openWhatsApp}
-                                className="flex items-center gap-2 text-xs font-medium text-brand-silver/50 hover:text-green-400 transition-colors group/btn bg-white/5 hover:bg-white/10 border border-white/5 py-1 px-2.5 rounded-lg w-max"
-                            >
-                                <Phone size={12} className="group-hover/btn:text-green-400" />
-                                WhatsApp
-                            </button>
-                        )}
+                        <button
+                            onClick={openWhatsApp}
+                            className="flex items-center gap-2 text-xs font-medium text-green-400 hover:text-green-300 transition-colors group/btn bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 py-1 px-2.5 rounded-lg w-max"
+                        >
+                            <Phone size={12} className="group-hover/btn:text-green-300" />
+                            WhatsApp
+                        </button>
                     </div>
                 </div>
                 <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border ${priorityBadge} uppercase tracking-widest`}>
