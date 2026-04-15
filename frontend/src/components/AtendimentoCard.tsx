@@ -2,6 +2,7 @@ import { Clock, Phone, Tag, CheckCircle2, Send, RotateCcw, Eye, Hexagon } from '
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import { memo } from 'react';
 
 interface Atendimento {
     id: string;
@@ -24,7 +25,7 @@ interface CardProps {
     onOpenDetail?: (atendimento: Atendimento) => void;
 }
 
-export default function AtendimentoCard({ atendimento, onFinalizar, onReabrir, onOpenDetail }: CardProps) {
+export default memo(function AtendimentoCard({ atendimento, onFinalizar, onReabrir, onOpenDetail }: CardProps) {
     const isPendente = atendimento.status === 'pendente';
 
     const priorityColors: Record<string, string> = {
@@ -53,8 +54,8 @@ export default function AtendimentoCard({ atendimento, onFinalizar, onReabrir, o
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="glass-panel p-6 hover:shadow-[0_0_30px_rgba(165,172,184,0.05)] transition-all group hover:-translate-y-1 duration-300 cursor-pointer relative overflow-hidden"
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="glass-panel p-6 hover:shadow-[0_0_30px_rgba(165,172,184,0.05)] transition-all group hover:-translate-y-1 duration-300 cursor-pointer relative overflow-hidden will-change-transform"
             onClick={() => onOpenDetail && onOpenDetail(atendimento)}
         >
             {/* Subtle background hexagon texture */}
@@ -136,4 +137,5 @@ export default function AtendimentoCard({ atendimento, onFinalizar, onReabrir, o
             </div>
         </motion.div>
     );
+});
 }

@@ -66,8 +66,8 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                    className="relative glass-panel w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="relative glass-panel w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden will-change-transform"
                     onClick={e => e.stopPropagation()}
                 >
                     <Hexagon size={300} strokeWidth={0.2} className="absolute -left-20 -top-20 text-brand-silver/5 rotate-12 pointer-events-none" />
@@ -94,7 +94,7 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                     {/* Body */}
                     <div className="p-6 space-y-8 overflow-y-auto relative z-10">
                         {/* Summary */}
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
                             <h4 className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest mb-3 flex items-center gap-2">
                                 <Hexagon size={10} /> Resumo Gerado pela IA
                             </h4>
@@ -104,7 +104,7 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                         </motion.div>
 
                         {/* Contact */}
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                             <h4 className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest mb-3 flex items-center gap-2">
                                 <Hexagon size={10} /> Ações de Contato
                             </h4>
@@ -117,7 +117,7 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                         </motion.div>
 
                         {/* Details Grid */}
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                             <h4 className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest mb-3 flex items-center gap-2">
                                 <Hexagon size={10} /> Detalhes do Registro
                             </h4>
