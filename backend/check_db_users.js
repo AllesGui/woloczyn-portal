@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 
-const connectionString = 'postgresql://woloczyn_db_user:LHXKYcTeKjs9vmX6v6t51dhyrZznDPJK@dpg-d6jola95pdvs73ddj3ug-a.oregon-postgres.render.com/woloczyn_db';
+// Use DATABASE_URL from environment or local .env file
+const connectionString = process.env.DATABASE_URL || 'postgresql://localhost/woloczyn_db';
 
 const client = new Client({
     connectionString: connectionString,

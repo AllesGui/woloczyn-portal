@@ -49,12 +49,14 @@ O n8n deve realizar um POST para a URL do seu backend (`ex: http://localhost:333
 
 ## ⚙️ Deploy em Produção
 
-### Backend
-1. Fazer deploy em uma plataforma como Railway, Render ou Heroku.
-2. Configurar as Environmental Variables (ENVs) no painel do servidor.
-3. Certificar-se de passar as ENVs corretas de conexão com o banco PostgreSQL gerenciado.
+### Backend - Vercel
+- Projeto: **woloczyn-backend**
+- URL: `https://woloczyn-backend.vercel.app`
+- API Base URL: `https://woloczyn-backend.vercel.app/api`
+- Configurar as Environmental Variables (ENVs) no painel do Vercel para conexão com Supabase/PostgreSQL
 
-### Frontend
-1. Fazer deploy na Vercel ou Netlify.
-2. No painel da Vercel/Netlify, adicionar a variável `VITE_API_URL` apontando para a URL do Backend em produção (ex: `https://meu-backend.onrender.com/api`).
-3. Certifique-se de que os comandos de build estão configurados (Build Command: `npm run build`, Output Directory: `dist`).
+### Frontend - Vercel
+- Projeto: **woloczyn-portal**
+- URL: `https://woloczyn-portal.vercel.app`
+- No painel da Vercel, adicionar a variável `VITE_API_URL` com valor: `https://woloczyn-backend.vercel.app/api`
+- Comandos de build: Build Command: `npm run build`, Output Directory: `dist`
