@@ -40,7 +40,7 @@ async function syncTelegramClients() {
 
 exports.create = async (req, res) => {
     try {
-        const { nome, telefone, area_juridica, prioridade, resumo, status = 'pendente', whatsapp_jid, telegram_chat_id } = req.body;
+        const { nome, telefone, area_juridica, prioridade, resumo, status = 'pendente', telegram_chat_id } = req.body;
 
         const checkQuery = await db.query(
             "SELECT id FROM atendimentos WHERE telefone = $1 AND status = 'pendente'",
@@ -52,12 +52,12 @@ exports.create = async (req, res) => {
         }
 
         const insertQuery = `
-            INSERT INTO atendimentos (nome, telefone, area_juridica, prioridade, resumo, status, whatsapp_jid, telegram_chat_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO atendimentos (nome, telefone, area_juridica, prioridade, resumo, status, telegram_chat_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
         `;
 
-        const values = [nome, telefone, area_juridica, prioridade, resumo, status, whatsapp_jid || null, telegram_chat_id || null];
+        const values = [nome, telefone, area_juridica, prioridade, resumo, status, telegram_chat_id || null];
         const result = await db.query(insertQuery, values);
 
         return res.status(201).json(result.rows[0]);

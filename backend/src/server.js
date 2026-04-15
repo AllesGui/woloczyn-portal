@@ -47,12 +47,6 @@ const initTable = async () => {
             ALTER TABLE agenda_events ADD COLUMN IF NOT EXISTS responsible_lawyer VARCHAR(100);
         `);
         console.log("✅ Tabela agenda_events verificada/criada.");
-
-        // Adicionar coluna whatsapp_jid na tabela atendimentos
-        await db.query(`
-            ALTER TABLE atendimentos ADD COLUMN IF NOT EXISTS whatsapp_jid VARCHAR(255);
-        `);
-        console.log("✅ Coluna whatsapp_jid verificada/criada na tabela atendimentos.");
     } catch (err) {
         console.error("❌ Erro ao inicializar tabelas:", err);
     }
