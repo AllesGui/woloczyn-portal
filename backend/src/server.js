@@ -9,8 +9,27 @@ const statsRoutes = require('./routes/stats.routes');
 const agendaRoutes = require('./routes/agenda.routes');
 
 const app = express();
+//adicionei isso
+const allowedOrigins = [
+    'https://www.schmidtwoloczyn.com.br',
+    'https://schmidtwoloczyn.com.br',
+    'https://woloczyn-portal.vercel.app',
+    'http://localhost:5173'
+];
 
-app.use(cors());
+app.use(cors({
+    origin: function (origin, callback) {
+        // permitir requisições sem origin (como mobile apps ou curl)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -38,7 +57,7 @@ const initTable = async () => {
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        
+
         // Adicionar a coluna caso a tabela já exista sem ela
         await db.query(`
             ALTER TABLE agenda_events ADD COLUMN IF NOT EXISTS responsible_lawyer VARCHAR(100);
@@ -50,6 +69,11 @@ const initTable = async () => {
 };
 initTable();
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT} (Local Mode)`);
+    });
+}
+
+// Export for Vercel Serverless Functions
+module.exports = app;
