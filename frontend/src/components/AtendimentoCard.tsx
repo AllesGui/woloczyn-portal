@@ -51,11 +51,10 @@ export default memo(function AtendimentoCard({ atendimento, onFinalizar, onReabr
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="glass-panel p-6 hover:shadow-[0_0_30px_rgba(165,172,184,0.05)] transition-all group hover:-translate-y-1 duration-300 cursor-pointer relative overflow-hidden will-change-transform"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+            className="glass-panel p-6 hover:shadow-[0_0_30px_rgba(165,172,184,0.05)] transition-all group hover:-translate-y-1 duration-300 cursor-pointer relative overflow-hidden will-change-auto"
             onClick={() => onOpenDetail && onOpenDetail(atendimento)}
         >
             {/* Subtle background hexagon texture */}

@@ -302,8 +302,9 @@ export default function Agenda() {
 
                       return (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.15 }}
                           key={appt.id}
                           className={`absolute left-1.5 right-1.5 rounded-xl border p-2.5 text-xs overflow-hidden cursor-pointer hover:brightness-110 shadow-lg backdrop-blur-xl z-10 transition-all hover:scale-[1.02] flex flex-col justify-between ${appt.color || 'bg-brand-silver/10 border-brand-silver/20 text-brand-accent'}`}
                           style={{ top: `${topOffset}px`, height: `${Math.max(height, 46)}px` }}
@@ -336,13 +337,13 @@ export default function Agenda() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
               className="w-full max-w-md bg-brand-surface border border-white/10 rounded-2xl shadow-2xl overflow-hidden glass-panel"
             >
               <div className="flex items-center justify-between p-6 border-b border-white/5 bg-brand-background">

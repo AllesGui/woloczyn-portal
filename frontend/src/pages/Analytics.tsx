@@ -93,13 +93,13 @@ export default function Analytics() {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
-            transition: { staggerChildren: 0.1 }
+            transition: { duration: 0.3 }
         }
     };
 
     const itemVariants: Variants = {
-        hidden: { opacity: 0, scale: 0.95, y: 10 },
-        show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 15 } }
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { duration: 0.2 } }
     };
 
     return (
@@ -140,7 +140,7 @@ export default function Analytics() {
 
             <main className="max-w-7xl mx-auto p-6 lg:p-10 relative z-10">
                 {/* Advanced KPI Cards */}
-                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 will-change-auto">
                     {/* Potential Value */}
                     <motion.div variants={itemVariants} className="glass-panel p-8 relative overflow-hidden group hover:border-white/20 transition-all duration-500">
                         <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110">
@@ -224,7 +224,7 @@ export default function Analytics() {
                     </motion.div>
                 </motion.div>
 
-                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-3 gap-8 will-change-auto">
                     {/* Main Chart: Volume Trend */}
                     <motion.div variants={itemVariants} className="lg:col-span-2 glass-panel p-8 lg:p-10">
                         <div className="flex items-center justify-between mb-8">
@@ -327,7 +327,7 @@ export default function Analytics() {
                 </motion.div>
 
                 {/* Bottom Row: Areas Ranking */}
-                <motion.div variants={containerVariants} initial="hidden" animate="show" className="mt-8 glass-panel p-8 lg:p-10 mb-10">
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="mt-8 glass-panel p-8 lg:p-10 mb-10 will-change-auto">
                     <div className="flex items-center justify-between mb-10">
                         <div>
                             <h3 className="text-xl font-light text-brand-accent tracking-wide flex items-center gap-3">
