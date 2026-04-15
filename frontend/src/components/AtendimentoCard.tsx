@@ -138,4 +138,3 @@ export default memo(function AtendimentoCard({ atendimento, onFinalizar, onReabr
         </motion.div>
     );
 });
-}
