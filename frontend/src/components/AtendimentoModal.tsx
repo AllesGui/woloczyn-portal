@@ -15,6 +15,7 @@ interface Atendimento {
     data_finalizacao?: string;
     usuario_responsavel?: string;
     telegram_chat_id?: string;
+    whatsapp_jid?: string;
 }
 
 interface ModalProps {
@@ -26,7 +27,11 @@ interface ModalProps {
 
 export default function AtendimentoModal({ atendimento, onClose, onFinalizar, onReabrir }: ModalProps) {
     const isPendente = atendimento.status === 'pendente';
+    const hasWhatsApp = !!atendimento.whatsapp_jid;
     const hasTelegram = !!atendimento.telegram_chat_id;
+    
+    // Extrair número do WhatsApp JID (ex: 555196723396@s.whatsapp.net -> 555196723396)
+    const whatsappNumber = atendimento.whatsapp_jid?.split('@')[0] || atendimento.telefone;
 
     const priorityColors: Record<string, string> = {
         'Alta': 'bg-red-500/10 text-red-400 border-red-500/20',
@@ -45,7 +50,7 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
     const priorityBadge = priorityColors[atendimento.prioridade] || 'bg-brand-silver/10 text-brand-silver border-brand-silver/20';
 
     const openTelegram = () => window.open(`https://web.telegram.org/k/#${atendimento.telegram_chat_id}`, '_blank');
-    const openWhatsApp = () => window.open(`https://wa.me/${atendimento.telefone}`, '_blank');
+    const openWhatsApp = () => window.open(`https://wa.me/${whatsappNumber}`, '_blank');
 
     return (
         <AnimatePresence>
@@ -107,15 +112,16 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                                 <Hexagon size={10} /> Ações de Contato
                             </h4>
                             <div className="flex gap-3">
-                                {hasTelegram ? (
+                                {hasWhatsApp && (
+                                    <button onClick={openWhatsApp} className="flex items-center justify-center gap-2 flex-1 bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 px-4 py-3 rounded-xl font-medium text-sm transition-colors shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                                        <Phone size={16} />
+                                        Abrir Conversa no WhatsApp
+                                    </button>
+                                )}
+                                {hasTelegram && (
                                     <button onClick={openTelegram} className="flex items-center justify-center gap-2 flex-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 px-4 py-3 rounded-xl font-medium text-sm transition-colors shadow-[0_0_15px_rgba(59,130,246,0.1)]">
                                         <Send size={16} />
                                         Abrir no Telegram
-                                    </button>
-                                ) : (
-                                    <button onClick={openWhatsApp} className="flex items-center justify-center gap-2 flex-1 bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 px-4 py-3 rounded-xl font-medium text-sm transition-colors shadow-[0_0_15px_rgba(34,197,94,0.1)]">
-                                        <Phone size={16} />
-                                        Abrir no WhatsApp
                                     </button>
                                 )}
                             </div>
