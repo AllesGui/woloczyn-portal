@@ -52,43 +52,40 @@ export default function LandingBpcLoas() {
             <div className="w-full bg-[#F6F6F6] text-slate-900 py-10 z-10 px-4 md:px-6">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-2xl md:text-3xl font-serif text-center text-[#1A2534] mb-8 font-bold">
-                        Veja se você se encaixa nos critérios:
+                        Veja se sua família pode se enquadrar:
                     </h2>
 
                     {/* The Card */}
                     <div className="bg-white rounded-3xl p-6 md:p-10 shadow-lg mb-8 border border-white">
                         <ul className="space-y-5">
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-lg md:text-xl text-[#3A4556] font-medium">
-                                    <strong>Diagnóstico</strong> de TEA ou TOD
+                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
+                                    Criança ou adolescente com diagnóstico de <strong>Transtorno do Espectro Autista (TEA)</strong> ou <strong>Transtorno Opositivo Desafiador (TOD)</strong>;
                                 </span>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-lg md:text-xl text-[#3A4556] font-medium">
-                                    <strong>Renda familiar</strong> dentro dos critérios legais
+                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
+                                    Renda familiar por pessoa dentro dos critérios legais;
                                 </span>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <div className="flex flex-col">
-                                    <span className="text-lg md:text-xl text-[#3A4556] font-medium">
-                                        <strong>Dificuldades no dia a dia</strong>
-                                    </span>
-                                    <span className="text-[#64748B] text-base mt-1">
-                                        (comunicação, autonomia, socialização)
-                                    </span>
-                                </div>
+                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
+                                    Dificuldades no dia a dia (comunicação, socialização, autonomia).
+                                </span>
                             </li>
                         </ul>
-                        <div className="text-center mb-8 mt-10">
+                    </div>
+
+                    <div className="text-center mb-8 mt-10">
                         <p className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed mb-8">
                             Se identificou com esses pontos? <strong className="text-[#1A2534]">Vale a pena analisar seu caso.</strong> <br className="hidden md:block"/>
                             Saiba que mesmo com o pedido anterior negado, é possível reavaliar seu pedido.
