@@ -38,7 +38,7 @@ export default function LandingBpcLoas() {
                         href={whatsappLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-4 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
+                        className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-8 py-4 w-auto rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
                     >
                         <span className="text-xl md:text-2xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
                             <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
