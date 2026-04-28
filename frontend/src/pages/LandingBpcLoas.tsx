@@ -41,9 +41,13 @@ export default function LandingBpcLoas() {
                         className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-5 w-auto rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60 text-center"
                     >
                         <div className="flex flex-col items-center justify-center">
-                            <span className="text-xl md:text-2xl leading-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2">
-                                <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
-                            </span>
+                            <div className="flex items-center justify-center gap-2">
+                                <span className="text-2xl">👉</span>
+                                <span className="text-xl md:text-2xl leading-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
+                                    Fale conosco pelo WhatsApp
+                                </span>
+                                <span className="text-2xl invisible">👉</span>
+                            </div>
                             <span className="text-xs font-medium opacity-80 mt-2 uppercase tracking-wider block">
                                 Clique no botão abaixo
                             </span>
