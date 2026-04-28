@@ -6,7 +6,7 @@ export default function LandingInsalubridade() {
         document.title = "Direito ao Adicional de Insalubridade 40%";
     }, []);
 
-    const whatsappLink = "https://wa.me/555191860933?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20an%C3%A1lise%20sobre%20o%20adicional%20de%20insalubridade%20de%2040%25.";
+    const whatsappLink = "https://wa.me/5551991860933?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20an%C3%A1lise%20sobre%20o%20adicional%20de%20insalubridade%20de%2040%25.";
 
     return (
         <div className="min-h-screen bg-[#F3F4F6] font-serif text-slate-800 flex flex-col">
@@ -14,7 +14,7 @@ export default function LandingInsalubridade() {
             <div className="relative w-full overflow-hidden bg-white border-b border-slate-200">
                 {/* Background Image */}
                 <div 
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[right_top] bg-[length:130%_auto] md:bg-right md:bg-cover"
+                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[right_top] bg-[length:120%_auto] md:bg-right md:bg-cover"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
                         backgroundRepeat: "no-repeat"
@@ -41,9 +41,9 @@ export default function LandingInsalubridade() {
                         className="inline-flex flex-col items-center justify-center bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-3 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#FFD700]/30"
                     >
                         <span className="text-xl md:text-2xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
-                            <span className="text-2xl">👉</span> Fale no WhatsApp
+                            <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
                         </span>
-                        <span className="text-xs font-medium opacity-80 mt-1 uppercase tracking-wider">Atendimento rápido e sigiloso</span>
+                        <span className="text-xs font-medium opacity-80 mt-1 uppercase tracking-wider">Clique no botão abaixo</span>
                     </a>
                 </div>
             </div>
@@ -144,7 +144,7 @@ export default function LandingInsalubridade() {
                         className="inline-flex flex-col items-center justify-center gap-1 bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] hover:from-[#C5A017] hover:to-[#E3D59B] text-slate-900 font-bold px-8 py-4 w-full md:w-auto min-w-[320px] rounded-full shadow-[0_4px_20px_rgba(212,175,55,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#FFD700]/30"
                     >
                         <span className="text-xl flex items-center"><span className="text-2xl mr-2">👉</span> Faça sua análise agora</span>
-                        <span className="text-sm font-normal text-slate-800 opacity-90 mt-1">Clique aqui e fale no WhatsApp</span>
+                        <span className="text-sm font-normal text-slate-800 opacity-90 mt-1">Clique aqui e fale conosco pelo WhatsApp</span>
                     </a>
                 </div>
             </div>
