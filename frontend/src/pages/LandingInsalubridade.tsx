@@ -14,16 +14,18 @@ export default function LandingInsalubridade() {
             <div className="relative w-full overflow-hidden bg-white border-b border-slate-200">
                 {/* Background Image */}
                 <div 
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[right_top] bg-[length:120%_auto] md:bg-right md:bg-cover"
+                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center right",
                         backgroundRepeat: "no-repeat"
                     }}
                 >
                 </div>
                 {/* Light gradient fade over the image on the left side */}
                 <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/90 to-transparent w-full md:w-[70%]"></div>
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/80 to-transparent md:hidden"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/60 via-white/30 to-transparent md:hidden"></div>
                 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-20 pb-16 md:pt-28 md:pb-24 text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-[#111827] leading-tight mb-6 drop-shadow-sm">

@@ -13,16 +13,18 @@ export default function LandingBpcLoas() {
             {/* Header Section with Fake Background Fade. We use a dark color as base and the image overlay. */}
             <div className="relative w-full overflow-hidden bg-[#162332]">
                 <div 
-                    className="absolute inset-0 z-0 opacity-80 mix-blend-luminosity bg-[right_top] bg-[length:130%_auto] md:bg-right md:bg-cover"
+                    className="absolute inset-0 z-0 opacity-80 mix-blend-luminosity"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center right",
                         backgroundRepeat: "no-repeat"
                     }}
                 >
                 </div>
                 {/* The actual color fade that overlays the image on the left side so text is readable */}
                 <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#162332] via-[#162332]/90 to-transparent w-full md:w-[70%]"></div>
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#162332] via-[#162332]/80 to-[#162332]/30 md:hidden"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#162332]/70 via-[#162332]/40 to-transparent md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-white mb-4 drop-shadow-md leading-snug">
