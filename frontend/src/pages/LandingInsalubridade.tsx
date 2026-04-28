@@ -26,15 +26,15 @@ export default function LandingInsalubridade() {
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,transparent_40%,white_100%)]"></div>
                 
                 {/* Light gradient fade over the image on the left side */}
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/40 to-transparent hidden md:block"></div>
-                <div className="absolute inset-0 z-0 bg-white/10 md:hidden"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/80 to-transparent hidden md:block"></div>
+                <div className="absolute inset-0 z-0 bg-white/70 md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-[#111827] mb-4 drop-shadow-sm leading-snug">
                         Você está deixando <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A8A] to-[#1E40AF] font-bold">dinheiro na mesa</span> todos os meses!
                     </h1>
-                    <p className="text-base md:text-lg text-slate-600 mb-8 max-w-xl leading-relaxed font-light">
-                        Quem trabalha com <strong className="text-slate-900 font-medium">limpeza de banheiros ou coleta de lixo</strong> têm direito a receber o adicional de <strong className="text-slate-900 font-medium">40% de insalubridade.</strong>
+                    <p className="text-base md:text-lg text-slate-700 mb-8 max-w-xl leading-relaxed font-medium drop-shadow-sm bg-white/40 md:bg-transparent p-2 md:p-0 rounded-lg">
+                        Quem trabalha com <strong className="text-slate-900 font-bold">limpeza de banheiros ou coleta de lixo</strong> têm direito a receber o adicional de <strong className="text-slate-900 font-bold">40% de insalubridade.</strong>
                     </p>
 
                     {/* Top CTA */}
