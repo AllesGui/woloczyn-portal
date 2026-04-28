@@ -6,6 +6,8 @@ import { useContext } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
+import LandingBpcLoas from './pages/LandingBpcLoas';
+import LandingInsalubridade from './pages/LandingInsalubridade';
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { signed, loading } = useContext(AuthContext);
@@ -21,6 +23,8 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/login" element={<Login />} />
+                    <Route path="/landingpage/bpc-loas" element={<LandingBpcLoas />} />
+                    <Route path="/landingpage/insalubridade" element={<LandingInsalubridade />} />
                     <Route
                         path="/"
                         element={
