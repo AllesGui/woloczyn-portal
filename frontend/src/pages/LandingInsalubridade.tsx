@@ -1,10 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { CheckCircle2, Lock, FastForward, User } from 'lucide-react';
 
 export default function LandingInsalubridade() {
+    const [showVideo, setShowVideo] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
     useEffect(() => {
         document.title = "Direito ao Adicional de Insalubridade 40%";
     }, []);
+
+    useEffect(() => {
+        let timer: any;
+        if (!showVideo) {
+            // Show image for 10 seconds, then switch to video
+            timer = setTimeout(() => {
+                setShowVideo(true);
+            }, 10000);
+        }
+        return () => clearTimeout(timer);
+    }, [showVideo]);
+
+    useEffect(() => {
+        if (showVideo && videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(err => console.log("Video play interrupted:", err));
+        }
+    }, [showVideo]);
+
+    const handleVideoEnded = () => {
+        setShowVideo(false);
+    };
 
     const whatsappLink = "https://wa.me/5551991860933?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20an%C3%A1lise%20sobre%20o%20adicional%20de%20insalubridade%20de%2040%25.";
 
@@ -13,7 +38,7 @@ export default function LandingInsalubridade() {
             {/* Header Section (White theme) */}
             <div className="relative w-full overflow-hidden bg-white">
                 <div
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply"
+                    className={`absolute inset-0 z-0 opacity-20 mix-blend-multiply transition-opacity duration-1000 ${showVideo ? 'opacity-0' : 'opacity-60'}`}
                     style={{
                         backgroundImage: "url('/landingpagelimpeza.jpg')",
                         backgroundSize: "cover",
@@ -22,9 +47,19 @@ export default function LandingInsalubridade() {
                     }}
                 >
                 </div>
+
+                <video
+                    ref={videoRef}
+                    className={`absolute inset-0 z-0 w-full h-full object-cover mix-blend-multiply transition-opacity duration-1000 ${showVideo ? 'opacity-60' : 'opacity-0'}`}
+                    src="/videolimpeza.mp4"
+                    muted
+                    playsInline
+                    autoPlay={showVideo}
+                    onEnded={handleVideoEnded}
+                />
                 {/* Vignette/Fade effect around the image to blend with white background */}
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,transparent_40%,white_100%)]"></div>
-                
+
                 {/* Light gradient fade over the image on the left side */}
                 <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/80 to-transparent hidden md:block"></div>
                 <div className="absolute inset-0 z-0 bg-white/70 md:hidden"></div>
@@ -163,7 +198,7 @@ export default function LandingInsalubridade() {
                             Muitos trabalhadores exercem essa função por anos sem receber o que é devido.
                         </p>
                         <p className="text-xl md:text-2xl text-white font-serif font-medium leading-relaxed">
-                            Você pode estar perdendo dinheiro todos os meses e nem sabe. <br className="hidden md:block"/>
+                            Você pode estar perdendo dinheiro todos os meses e nem sabe. <br className="hidden md:block" />
                             Faça uma verificação agora.
                         </p>
                     </div>
