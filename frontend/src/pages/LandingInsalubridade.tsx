@@ -14,10 +14,9 @@ export default function LandingInsalubridade() {
             <div className="relative w-full overflow-hidden bg-white border-b border-slate-200">
                 {/* Background Image */}
                 <div 
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply"
+                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[80%_top] md:bg-right"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
-                        backgroundPosition: "center right",
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat"
                     }}
