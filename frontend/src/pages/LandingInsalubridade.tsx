@@ -26,7 +26,7 @@ export default function LandingInsalubridade() {
 
                 {/* Light gradient fade over the video on the left side */}
                 <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/30 to-transparent hidden md:block"></div>
-                <div className="absolute inset-0 z-0 bg-white/70 md:hidden"></div>
+                <div className="absolute inset-0 z-0 bg-white/30 md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-[#111827] mb-4 drop-shadow-sm leading-snug">
