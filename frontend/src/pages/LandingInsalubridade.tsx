@@ -9,15 +9,14 @@ export default function LandingInsalubridade() {
     const whatsappLink = "https://wa.me/555191860933?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20an%C3%A1lise%20sobre%20o%20adicional%20de%20insalubridade%20de%2040%25.";
 
     return (
-        <div className="min-h-screen bg-[#F3F4F6] font-sans text-slate-800 flex flex-col">
+        <div className="min-h-screen bg-[#F3F4F6] font-serif text-slate-800 flex flex-col">
             {/* Header Section (Inverted: Light Background with Image Fade) */}
             <div className="relative w-full overflow-hidden bg-white border-b border-slate-200">
                 {/* Background Image */}
                 <div 
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[80%_top] md:bg-right"
+                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-[right_top] bg-[length:130%_auto] md:bg-right md:bg-cover"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
-                        backgroundSize: "cover",
                         backgroundRepeat: "no-repeat"
                     }}
                 >

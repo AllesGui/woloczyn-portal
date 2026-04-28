@@ -9,14 +9,13 @@ export default function LandingBpcLoas() {
     const whatsappLink = "https://wa.me/5551991860933?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20uma%20an%C3%A1lise%20sobre%20o%20direito%20ao%20BPC%20LOAS.";
 
     return (
-        <div className="min-h-screen bg-[#F6F6F6] font-sans flex flex-col">
+        <div className="min-h-screen bg-[#F6F6F6] font-serif flex flex-col">
             {/* Header Section with Fake Background Fade. We use a dark color as base and the image overlay. */}
             <div className="relative w-full overflow-hidden bg-[#162332]">
                 <div 
-                    className="absolute inset-0 z-0 opacity-80 mix-blend-luminosity bg-[80%_top] md:bg-right"
+                    className="absolute inset-0 z-0 opacity-80 mix-blend-luminosity bg-[right_top] bg-[length:130%_auto] md:bg-right md:bg-cover"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
-                        backgroundSize: "cover",
                         backgroundRepeat: "no-repeat"
                     }}
                 >
@@ -41,7 +40,7 @@ export default function LandingBpcLoas() {
                         className="inline-flex flex-col items-center justify-center bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-4 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
                     >
                         <span className="text-xl md:text-2xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
-                            <span className="text-2xl">👉</span> Fale no WhatsApp
+                            <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
                         </span>
                         <span className="text-xs font-medium opacity-80 mt-1 uppercase tracking-wider">Clique no botão abaixo</span>
                     </a>
@@ -101,10 +100,10 @@ export default function LandingBpcLoas() {
                             rel="noreferrer"
                             className="inline-flex flex-col items-center justify-center bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-4 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-transform transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
                         >
-                            <span className="text-xl md:text-2xl flex items-center gap-3 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
-                                <span className="text-2xl">👉</span> Clique no botão abaixo e fale no WhatsApp
+                            <span className="text-xl md:text-xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)] text-center">
+                                <span className="text-2xl">👉</span> Receba uma orientação rápida sobre o seu caso
                             </span>
-                            <span className="text-sm font-medium opacity-80 mt-1">Receba uma orientação rápida sobre o seu caso</span>
+                            <span className="text-sm font-medium opacity-80 mt-1">Fale agora no WhatsApp</span>
                         </a>
                     </div>
                 </div>
