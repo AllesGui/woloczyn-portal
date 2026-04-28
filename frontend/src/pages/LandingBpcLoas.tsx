@@ -22,7 +22,7 @@ export default function LandingBpcLoas() {
                 >
                 </div>
                 {/* The actual color fade that overlays the image on the left side so text is readable */}
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#162332] via-[#162332]/90 to-transparent hidden md:block"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#162332] via-[#162332]/50 to-transparent hidden md:block"></div>
                 <div className="absolute inset-0 z-0 bg-[#162332]/20 md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
@@ -41,9 +41,8 @@ export default function LandingBpcLoas() {
                         className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-5 w-auto rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60 text-center"
                     >
                         <div className="flex flex-col items-center justify-center">
-                            <span className="text-3xl mb-1">👉</span>
-                            <span className="text-xl md:text-2xl leading-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
-                                Fale conosco pelo WhatsApp
+                            <span className="text-xl md:text-2xl leading-tight drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2">
+                                <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
                             </span>
                             <span className="text-xs font-medium opacity-80 mt-2 uppercase tracking-wider block">
                                 Clique no botão abaixo
