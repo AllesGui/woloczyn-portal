@@ -38,7 +38,7 @@ export default function LandingInsalubridade() {
             {/* Header Section (White theme) */}
             <div className="relative w-full overflow-hidden bg-white">
                 <div
-                    className={`absolute inset-0 z-0 opacity-20 mix-blend-multiply transition-opacity duration-1000 ${showVideo ? 'opacity-0' : 'opacity-60'}`}
+                    className={`absolute inset-0 z-0 transition-opacity duration-[2000ms] mix-blend-multiply ${showVideo ? 'opacity-0 pointer-events-none' : 'opacity-90'}`}
                     style={{
                         backgroundImage: "url('/landingpagelimpeza.jpg')",
                         backgroundSize: "cover",
@@ -50,11 +50,10 @@ export default function LandingInsalubridade() {
 
                 <video
                     ref={videoRef}
-                    className={`absolute inset-0 z-0 w-full h-full object-cover mix-blend-multiply transition-opacity duration-1000 ${showVideo ? 'opacity-60' : 'opacity-0'}`}
+                    className={`absolute inset-0 z-0 w-full h-full object-cover transition-opacity duration-[2000ms] mix-blend-multiply ${showVideo ? 'opacity-90' : 'opacity-0 pointer-events-none'}`}
                     src="/videolimpeza.mp4"
                     muted
                     playsInline
-                    autoPlay={showVideo}
                     onEnded={handleVideoEnded}
                 />
                 {/* Vignette/Fade effect around the image to blend with white background */}
