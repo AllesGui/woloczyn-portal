@@ -13,21 +13,25 @@ export default function LandingInsalubridade() {
             {/* Header Section (White theme) */}
             <div className="relative w-full overflow-hidden bg-white">
                 <div
-                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply bg-center md:bg-right"
+                    className="absolute inset-0 z-0 opacity-60 mix-blend-multiply"
                     style={{
-                        backgroundImage: "url('/landingpagefilha.jpeg')",
+                        backgroundImage: "url('/landingpagelimpeza.jpg')",
                         backgroundSize: "cover",
+                        backgroundPosition: "center 15%",
                         backgroundRepeat: "no-repeat"
                     }}
                 >
                 </div>
+                {/* Vignette/Fade effect around the image to blend with white background */}
+                <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,transparent_40%,white_100%)]"></div>
+                
                 {/* Light gradient fade over the image on the left side */}
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/50 to-transparent hidden md:block"></div>
-                <div className="absolute inset-0 z-0 bg-white/20 md:hidden"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/40 to-transparent hidden md:block"></div>
+                <div className="absolute inset-0 z-0 bg-white/10 md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-[#111827] mb-4 drop-shadow-sm leading-snug">
-                        Você pode ter direito a 40% de <br className="hidden md:block" /> adicional de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A8A] to-[#1E40AF] font-bold">insalubridade</span> e está deixando dinheiro na mesa todos os meses.
+                        Você está deixando <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E3A8A] to-[#1E40AF] font-bold">dinheiro na mesa</span> todos os meses!
                     </h1>
                     <p className="text-base md:text-lg text-slate-600 mb-8 max-w-xl leading-relaxed font-light">
                         Quem trabalha com <strong className="text-slate-900 font-medium">limpeza de banheiros ou coleta de lixo</strong> têm direito a receber o adicional de <strong className="text-slate-900 font-medium">40% de insalubridade.</strong>
