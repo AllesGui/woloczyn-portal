@@ -12,7 +12,7 @@ export default function LandingBpcLoas() {
         <div className="min-h-screen bg-[#F6F6F6] font-serif flex flex-col">
             {/* Header Section with Fake Background Fade. We use a dark color as base and the image overlay. */}
             <div className="relative w-full overflow-hidden bg-[#162332]">
-                <div 
+                <div
                     className="absolute inset-0 z-0 opacity-80 mix-blend-luminosity bg-center md:bg-right"
                     style={{
                         backgroundImage: "url('/landingpagefilha.jpeg')",
@@ -27,18 +27,18 @@ export default function LandingBpcLoas() {
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-5xl lg:text-5xl font-serif text-white mb-4 drop-shadow-md leading-snug">
-                        Descubra se você tem <br className="hidden md:block"/> direito ao <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EED789] to-[#D3AD5D] font-bold">BPC LOAS</span>
+                        Descubra se você tem <br className="hidden md:block" /> direito ao <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EED789] to-[#D3AD5D] font-bold">BPC LOAS</span>
                     </h1>
                     <p className="text-base md:text-lg text-slate-300 mb-8 max-w-xl leading-relaxed drop-shadow-sm font-light">
                         Famílias com crianças ou adolescentes com <strong className="text-white font-medium">TEA ou TOD</strong> podem solicitar o benefício de até <strong className="text-white font-medium">um salário mínimo mensal.</strong>
                     </p>
 
                     {/* Top CTA */}
-                    <a 
+                    <a
                         href={whatsappLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex flex-col items-center justify-center bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-4 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
+                        className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-10 py-4 w-full md:w-auto min-w-[340px] rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#F3E5AB]/60"
                     >
                         <span className="text-xl md:text-2xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
                             <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
@@ -49,7 +49,7 @@ export default function LandingBpcLoas() {
             </div>
 
             {/* Main Content Card Wrapper */}
-            <div className="w-full bg-[#F6F6F6] text-slate-900 py-10 z-10 px-4 md:px-6">
+            <div className="w-full bg-[#F6F6F6] text-slate-900 pt-10 pb-4 md:pb-6 z-10 px-4 md:px-6">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-2xl md:text-3xl font-serif text-center text-[#1A2534] mb-8 font-bold">
                         Veja se sua família pode se enquadrar:
@@ -85,17 +85,17 @@ export default function LandingBpcLoas() {
                         </ul>
                     </div>
 
-                    <div className="text-center mb-8 mt-10">
+                    <div className="text-center mb-2 mt-8">
                         <p className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed mb-8">
-                            Se identificou com esses pontos? <strong className="text-[#1A2534]">Vale a pena analisar seu caso.</strong> <br className="hidden md:block"/>
-                            Saiba que mesmo com o pedido anterior negado, é possível reavaliar seu pedido.
+                            Se identificou com esses pontos? <strong className="text-[#1A2534]">Vale a pena analisar seu caso.</strong> <br className="hidden md:block" />
+                            Saiba que mesmo com requerimento anterior negado, é possível reavaliarmos o seu pedido.
                         </p>
-                        
+
                         <p className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed mb-10">
                             Nosso escritório é especializado em <strong>direito previdenciário</strong>, e estamos prontos para te ajudar.
                         </p>
 
-                        <a 
+                        <a
                             href={whatsappLink}
                             target="_blank"
                             rel="noreferrer"
@@ -111,9 +111,9 @@ export default function LandingBpcLoas() {
             </div>
 
             {/* Objections / Beneficios */}
-            <div className="w-full bg-[#F6F6F6] py-16 px-6 relative">
-                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 z-0 pointer-events-none"></div>
-                 <div className="max-w-4xl mx-auto relative z-10">
+            <div className="w-full bg-[#F6F6F6] pt-8 pb-16 px-6 relative">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 z-0 pointer-events-none"></div>
+                <div className="max-w-4xl mx-auto relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                         <div className="flex flex-col items-center text-center">
                             <Lock className="w-12 h-12 text-[#3A4556] mb-4" strokeWidth={1} />
@@ -129,7 +129,7 @@ export default function LandingBpcLoas() {
                             <h3 className="text-lg text-[#1A2534] font-bold mb-2">Análise individual do seu caso</h3>
                         </div>
                     </div>
-                    
+
                     <div className="text-center max-w-2xl mx-auto mb-10">
                         <p className="text-lg md:text-xl text-[#3A4556] mb-4 leading-relaxed font-light">
                             Muitas famílias que têm direito ao benefício não solicitam por falta de informação ou orientação correta.
@@ -140,7 +140,7 @@ export default function LandingBpcLoas() {
                     </div>
 
                     <div className="text-center">
-                        <a 
+                        <a
                             href={whatsappLink}
                             target="_blank"
                             rel="noreferrer"
