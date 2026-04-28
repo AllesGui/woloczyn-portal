@@ -64,29 +64,29 @@ export default function LandingBpcLoas() {
                     </h2>
 
                     {/* The Card */}
-                    <div className="bg-white rounded-3xl p-6 md:p-10 shadow-lg mb-8 border border-white">
+                    <div className="bg-[#162332] rounded-3xl p-6 md:p-10 shadow-2xl mb-8 border border-slate-700/50">
                         <ul className="space-y-5">
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0 shadow-sm border border-emerald-500/20">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
-                                    Criança ou adolescente com diagnóstico de <strong>Transtorno do Espectro Autista (TEA)</strong> ou <strong>Transtorno Opositivo Desafiador (TOD)</strong>;
+                                <span className="text-lg md:text-xl text-slate-200 font-medium leading-relaxed">
+                                    Criança ou adolescente com diagnóstico de <strong className="text-white">Transtorno do Espectro Autista (TEA)</strong> ou <strong className="text-white">Transtorno Opositivo Desafiador (TOD)</strong>;
                                 </span>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0 shadow-sm border border-emerald-500/20">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
+                                <span className="text-lg md:text-xl text-slate-200 font-medium leading-relaxed">
                                     Renda familiar por pessoa dentro dos critérios legais;
                                 </span>
                             </li>
                             <li className="flex items-start gap-4">
-                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0">
+                                <div className="bg-[#468266] rounded-full p-1 mt-1 shrink-0 shadow-sm border border-emerald-500/20">
                                     <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-lg md:text-xl text-[#3A4556] font-medium leading-relaxed">
+                                <span className="text-lg md:text-xl text-slate-200 font-medium leading-relaxed">
                                     Dificuldades no dia a dia (comunicação, socialização, autonomia).
                                 </span>
                             </li>
