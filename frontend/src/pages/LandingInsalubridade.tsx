@@ -39,9 +39,9 @@ export default function LandingInsalubridade() {
                         href={whatsappLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-8 py-3 w-auto rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#FFD700]/30"
+                        className="inline-flex flex-col items-center justify-center self-center md:self-start bg-gradient-to-r from-[#EED789] via-[#D3AD5D] to-[#BE923C] hover:brightness-110 text-[#2D210F] font-bold px-8 py-3 w-auto rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98] border border-[#FFD700]/30 text-center"
                     >
-                        <span className="text-xl md:text-2xl flex items-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
+                        <span className="text-xl md:text-2xl flex items-center justify-center gap-2 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]">
                             <span className="text-2xl">👉</span> Fale conosco pelo WhatsApp
                         </span>
                         <span className="text-xs font-medium opacity-80 mt-1 uppercase tracking-wider">Clique no botão abaixo</span>
