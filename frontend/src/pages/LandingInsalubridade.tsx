@@ -13,19 +13,19 @@ export default function LandingInsalubridade() {
             {/* Header Section (White theme with Video Background) */}
             <div className="relative w-full overflow-hidden bg-white">
                 <video
-                    className="absolute inset-0 z-0 w-full h-full object-cover opacity-90 mix-blend-multiply"
+                    className="absolute inset-0 z-0 w-full h-full object-cover opacity-60 mix-blend-multiply"
                     src="/videolimpeza.mp4"
                     muted
                     playsInline
                     autoPlay
                     loop
                 />
-                
+
                 {/* Vignette/Fade effect around the video to blend with white background */}
-                <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,transparent_40%,white_100%)]"></div>
-                
+                <div className="absolute inset-0 z-0 bg-[radial-gradient(circle,transparent_20%,white_100%)]"></div>
+
                 {/* Light gradient fade over the video on the left side */}
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/80 to-transparent hidden md:block"></div>
+                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/30 to-transparent hidden md:block"></div>
                 <div className="absolute inset-0 z-0 bg-white/70 md:hidden"></div>
 
                 <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16 flex flex-col items-start text-left">
@@ -63,7 +63,7 @@ export default function LandingInsalubridade() {
             <div className="w-full bg-[#111827] text-white pt-10 pb-4 md:pb-6 z-10 px-4 md:px-6">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="text-2xl md:text-3xl font-serif text-center text-white mb-8 font-bold">
-                        Verifique agora se você se encaixa:
+                        Verifique agora os requisitos:
                     </h2>
 
                     {/* The Card (White card in dark section) */}
@@ -106,7 +106,7 @@ export default function LandingInsalubridade() {
 
                     <div className="text-center mb-2 mt-8">
                         <p className="text-lg md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
-                            Se marcou 1 ou mais itens, <strong className="text-white font-bold">vale a pena analisar seu caso.</strong> <br className="hidden md:block" />
+                            Se marcou 1 ou mais itens, <strong className="text-white font-bold">faça AGORA uma análise sobre seu caso!</strong> <br className="hidden md:block" />
                             <span className="text-[#EED789] block mt-6 text-xl md:text-2xl font-bold">
                                 Esse adicional pode representar um aumento significativo de até R$648,50 no seu salário. Além, de valores retroativos de até 5 anos.
                             </span>
@@ -162,7 +162,7 @@ export default function LandingInsalubridade() {
                             Muitos trabalhadores exercem essa função por anos sem receber o que é devido.
                         </p>
                         <p className="text-xl md:text-2xl text-white font-serif font-medium leading-relaxed">
-                            Você pode estar perdendo dinheiro todos os meses e nem sabe. <br className="hidden md:block"/>
+                            Você pode estar perdendo dinheiro todos os meses e nem sabe. <br className="hidden md:block" />
                             Faça uma verificação agora.
                         </p>
                     </div>
