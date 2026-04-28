@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CheckCircle2, Lock, FileText, User } from 'lucide-react';
 
 export default function LandingBpcLoas() {

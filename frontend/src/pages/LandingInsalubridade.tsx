@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CheckCircle2, Lock, FastForward, User } from 'lucide-react';
 
 export default function LandingInsalubridade() {
