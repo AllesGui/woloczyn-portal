@@ -162,7 +162,7 @@ export default function LandingBpcLoas() {
                                     </span>
                                     <span className="text-2xl invisible">👉</span>
                                 </div>
-                                <span className="text-sm font-medium opacity-80 mt-1">Clique no botão abaixo e fale no WhatsApp</span>
+                                <span className="text-sm font-medium opacity-80 mt-1">Fale Conosco pelo WhatsApp</span>
                             </div>
                         </a>
                     </div>
