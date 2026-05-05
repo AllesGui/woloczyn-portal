@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth.routes');
 const atendimentoRoutes = require('./routes/atendimento.routes');
 const statsRoutes = require('./routes/stats.routes');
 const agendaRoutes = require('./routes/agenda.routes');
+const clienteRoutes = require('./routes/cliente.routes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/atendimentos', atendimentoRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/agenda', agendaRoutes);
+app.use('/api/clientes', clienteRoutes);
 
 const PORT = process.env.PORT || 3333;
 
@@ -38,6 +40,18 @@ const initTable = async () => {
                 urgency VARCHAR(50),
                 description TEXT,
                 responsible_lawyer VARCHAR(100),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Criação da tabela clientes
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS clientes (
+                id SERIAL PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                telefone VARCHAR(255) NOT NULL,
+                area VARCHAR(255) NOT NULL,
+                status_triagem VARCHAR(50) DEFAULT 'concluido',
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `);

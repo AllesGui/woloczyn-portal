@@ -5,7 +5,8 @@ import api from '../services/api';
 import AtendimentoCard from '../components/AtendimentoCard';
 import AtendimentoModal from '../components/AtendimentoModal';
 import Agenda from '../components/Agenda';
-import { LogOut, Search, Filter, Hexagon, History, Activity, BarChart3, Menu, Calendar } from 'lucide-react';
+import ClientesList from '../components/ClientesList';
+import { LogOut, Search, Filter, Hexagon, History, Activity, BarChart3, Menu, Calendar, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Atendimento {
@@ -25,7 +26,7 @@ interface Atendimento {
 export default function Dashboard() {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'pendente' | 'atendido' | 'agenda'>('pendente');
+    const [activeTab, setActiveTab] = useState<'pendente' | 'atendido' | 'agenda' | 'clientes'>('pendente');
     const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -144,6 +145,14 @@ export default function Dashboard() {
                             {activeTab === 'agenda' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
                         </button>
                         <button
+                            onClick={() => setActiveTab('clientes')}
+                            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide ${activeTab === 'clientes' ? 'bg-white/10 text-brand-accent shadow-inner border border-white/5' : 'text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent'}`}
+                        >
+                            <Users size={18} className={activeTab === 'clientes' ? 'text-brand-silver drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : ''} />
+                            Clientes
+                            {activeTab === 'clientes' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-silver shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>}
+                        </button>
+                        <button
                             onClick={() => navigate('/analytics')}
                             className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all font-medium text-sm tracking-wide text-brand-silver/50 hover:text-brand-silver hover:bg-white/5 border border-transparent"
                         >
@@ -209,6 +218,7 @@ export default function Dashboard() {
                                 <p className="text-[10px] font-bold text-brand-silver/40 uppercase tracking-widest">Gestão</p>
                             </div>
                             <button onClick={() => { setActiveTab('agenda'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'agenda' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Calendar size={18} />Agenda</button>
+                            <button onClick={() => { setActiveTab('clientes'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${activeTab === 'clientes' ? 'bg-white/10 text-brand-accent' : 'text-brand-silver/50'}`}><Users size={18} />Clientes</button>
                             <button onClick={() => { navigate('/analytics'); setMobileMenuOpen(false); }} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-brand-silver/50`}><BarChart3 size={18} />Métricas</button>
                             <button onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 mt-2 text-sm border border-red-500/10"><LogOut size={18} />Sair</button>
                         </div>
@@ -221,6 +231,8 @@ export default function Dashboard() {
                 <div className="max-w-6xl mx-auto pb-10 h-full">
                     {activeTab === 'agenda' ? (
                         <Agenda />
+                    ) : activeTab === 'clientes' ? (
+                        <ClientesList />
                     ) : (
                         <>
                             <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
