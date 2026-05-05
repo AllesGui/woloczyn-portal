@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, X, Search, Users, Phone, Map, Shield, Edit2 } from 'lucide-react';
+import { Plus, X, Search, Users, Phone, Shield, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
