@@ -10,7 +10,8 @@ interface User {
 interface AuthContextData {
     signed: boolean;
     user: User | null;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<{ requirePasswordChange?: boolean, token?: string, tempUser?: any } | void>;
+    confirmPasswordChange: (token: string, tempUser: any) => void;
     logout: () => void;
     loading: boolean;
 }
@@ -36,13 +37,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     async function login(email: string, password: string) {
         const response = await api.post('/auth/login', { email, password });
 
-        const { user, token } = response.data;
+        const { user, token, requirePasswordChange } = response.data;
+
+        if (requirePasswordChange) {
+            return { requirePasswordChange, token, tempUser: user };
+        }
 
         localStorage.setItem('@woloczyn:user', JSON.stringify(user));
         localStorage.setItem('@woloczyn:token', token);
 
         api.defaults.headers.Authorization = `Bearer ${token}`;
         setUser(user);
+    }
+
+    function confirmPasswordChange(token: string, tempUser: any) {
+        localStorage.setItem('@woloczyn:user', JSON.stringify(tempUser));
+        localStorage.setItem('@woloczyn:token', token);
+        api.defaults.headers.Authorization = `Bearer ${token}`;
+        setUser(tempUser);
     }
 
     function logout() {
@@ -52,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, user, login, logout, loading }}>
+        <AuthContext.Provider value={{ signed: !!user, user, login, confirmPasswordChange, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

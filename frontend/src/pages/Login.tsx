@@ -4,12 +4,21 @@ import { Lock, Mail } from 'lucide-react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+import api from '../services/api';
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login, signed } = useContext(AuthContext);
+    const { login, confirmPasswordChange, signed } = useContext(AuthContext);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    // Password change state
+    const [requirePasswordChange, setRequirePasswordChange] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [tempData, setTempData] = useState<any>(null);
+
     const navigate = useNavigate();
 
     if (signed) {
@@ -21,10 +30,45 @@ export default function Login() {
         try {
             setError('');
             setLoading(true);
-            await login(email, password);
+            const result = await login(email, password);
+            if (result && result.requirePasswordChange) {
+                setRequirePasswordChange(true);
+                setTempData(result);
+            } else {
+                navigate('/');
+            }
+        } catch (err: any) {
+            if (err.response?.data?.error) {
+                setError(err.response.data.error);
+            } else {
+                setError('Credenciais inválidas. Tente novamente.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleChangePassword(e: React.FormEvent) {
+        e.preventDefault();
+        if (newPassword !== confirmNewPassword) {
+            setError('As senhas não coincidem.');
+            return;
+        }
+
+        try {
+            setError('');
+            setLoading(true);
+            await api.post('/auth/change-password', { newPassword }, {
+                headers: { Authorization: `Bearer ${tempData.token}` }
+            });
+            confirmPasswordChange(tempData.token, tempData.tempUser);
             navigate('/');
-        } catch (err) {
-            setError('Credenciais inválidas. Tente novamente.');
+        } catch (err: any) {
+            if (err.response?.data?.error) {
+                setError(err.response.data.error);
+            } else {
+                setError('Erro ao alterar senha. Tente novamente.');
+            }
         } finally {
             setLoading(false);
         }
@@ -71,60 +115,112 @@ export default function Login() {
                     </motion.div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5, duration: 0.6 }}
-                    >
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Mail size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                {!requirePasswordChange ? (
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5, duration: 0.6 }}
+                        >
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Mail size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                                </div>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
+                                    placeholder="E-mail profissional"
+                                    required
+                                />
                             </div>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
-                                placeholder="E-mail profissional"
-                                required
-                            />
-                        </div>
-                    </motion.div>
+                        </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.6, duration: 0.6 }}
-                    >
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6, duration: 0.6 }}
+                        >
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                                </div>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
+                                    placeholder="Senha"
+                                    required
+                                />
                             </div>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
-                                placeholder="Senha"
-                                required
-                            />
-                        </div>
-                    </motion.div>
+                        </motion.div>
 
-                    <motion.button
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7, duration: 0.6 }}
-                        type="submit"
-                        disabled={loading}
-                        className="w-full glass-button py-3.5 px-4 flex items-center justify-center mt-8 uppercase text-xs tracking-widest font-semibold disabled:opacity-50"
-                    >
-                        {loading ? (
-                            <div className="w-5 h-5 border-2 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
-                        ) : 'Acessar Portal'}
-                    </motion.button>
-                </form>
+                        <motion.button
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.7, duration: 0.6 }}
+                            type="submit"
+                            disabled={loading}
+                            className="w-full glass-button py-3.5 px-4 flex items-center justify-center mt-8 uppercase text-xs tracking-widest font-semibold disabled:opacity-50"
+                        >
+                            {loading ? (
+                                <div className="w-5 h-5 border-2 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
+                            ) : 'Acessar Portal'}
+                        </motion.button>
+                    </form>
+                ) : (
+                    <form onSubmit={handleChangePassword} className="space-y-6">
+                        <div className="text-center mb-6">
+                            <h3 className="text-brand-silver font-medium text-sm">Atualização Obrigatória</h3>
+                            <p className="text-brand-silver/50 text-xs mt-1">Sua senha provisória expirou. Por favor, cadastre uma nova senha.</p>
+                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                        >
+                            <div className="relative group mb-4">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                                </div>
+                                <input
+                                    type="password"
+                                    value={newPassword}
+                                    onChange={e => setNewPassword(e.target.value)}
+                                    className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
+                                    placeholder="Nova Senha"
+                                    required
+                                />
+                            </div>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock size={18} className="text-brand-silver/40 group-focus-within:text-brand-silver transition-colors" />
+                                </div>
+                                <input
+                                    type="password"
+                                    value={confirmNewPassword}
+                                    onChange={e => setConfirmNewPassword(e.target.value)}
+                                    className="block w-full pl-11 pr-4 py-3.5 glass-input text-sm"
+                                    placeholder="Confirmar Nova Senha"
+                                    required
+                                />
+                            </div>
+                        </motion.div>
+
+                        <motion.button
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            type="submit"
+                            disabled={loading}
+                            className="w-full glass-button py-3.5 px-4 flex items-center justify-center mt-8 uppercase text-xs tracking-widest font-semibold disabled:opacity-50"
+                        >
+                            {loading ? (
+                                <div className="w-5 h-5 border-2 border-brand-accent/30 border-t-brand-accent rounded-full animate-spin" />
+                            ) : 'Salvar e Acessar'}
+                        </motion.button>
+                    </form>
+                )}
             </motion.div>
         </div>
     );

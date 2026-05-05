@@ -8,6 +8,7 @@ const atendimentoRoutes = require('./routes/atendimento.routes');
 const statsRoutes = require('./routes/stats.routes');
 const agendaRoutes = require('./routes/agenda.routes');
 const clienteRoutes = require('./routes/cliente.routes');
+const usuarioRoutes = require('./routes/usuario.routes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/api/atendimentos', atendimentoRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/agenda', agendaRoutes);
 app.use('/api/clientes', clienteRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 const PORT = process.env.PORT || 3333;
 
