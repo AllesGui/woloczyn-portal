@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, X, Search, Users, Phone, Shield, Edit2 } from 'lucide-react';
+import { Plus, X, Search, Users, Phone, Shield, Edit2, Trash2, LayoutGrid, List as ListIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
@@ -18,6 +18,7 @@ export default function ClientesList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
     // Form State
     const [formData, setFormData] = useState({
@@ -113,6 +114,16 @@ export default function ClientesList() {
         }
     };
 
+    const deleteCliente = async (id: string) => {
+        if (!confirm('Tem certeza que deseja excluir este cliente?')) return;
+        try {
+            await api.delete(`/clientes/${id}`);
+            setClientes(clientes.filter(c => c.id !== id));
+        } catch (err) {
+            alert("Erro ao excluir cliente.");
+        }
+    };
+
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col h-full">
             {/* Header */}
@@ -137,6 +148,24 @@ export default function ClientesList() {
                             className="w-full pl-9 pr-4 py-2.5 bg-black/20 border border-white/10 rounded-xl text-sm text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none"
                         />
                     </div>
+                    
+                    <div className="flex bg-black/20 border border-white/10 rounded-xl p-1">
+                        <button 
+                            onClick={() => setViewMode('grid')}
+                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white/10 text-white shadow-md' : 'text-brand-silver/40 hover:text-white'}`}
+                            title="Visualização em Grade"
+                        >
+                            <LayoutGrid size={18} />
+                        </button>
+                        <button 
+                            onClick={() => setViewMode('list')}
+                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white/10 text-white shadow-md' : 'text-brand-silver/40 hover:text-white'}`}
+                            title="Visualização em Lista"
+                        >
+                            <ListIcon size={18} />
+                        </button>
+                    </div>
+
                     <button 
                         onClick={() => {
                             setEditingId(null);
@@ -164,7 +193,7 @@ export default function ClientesList() {
                         <p className="text-brand-silver/50 text-sm uppercase tracking-widest font-bold">Nenhum cliente encontrado</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto custom-scrollbar">
+                    <div className={`overflow-y-auto custom-scrollbar pr-2 ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'flex flex-col gap-3'}`}>
                         <AnimatePresence>
                             {filteredClientes.map(cliente => (
                                 <motion.div 
@@ -172,17 +201,40 @@ export default function ClientesList() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     key={cliente.id} 
-                                    className="p-5 border border-white/5 rounded-2xl bg-black/20 hover:bg-white/5 transition-all group flex flex-col gap-3"
+                                    className={`p-5 border border-white/5 rounded-2xl bg-black/20 hover:bg-white/5 transition-all group flex ${viewMode === 'grid' ? 'flex-col gap-3' : 'flex-row items-center justify-between gap-6'}`}
                                 >
-                                    <div className="flex justify-between items-start">
+                                    <div className={`flex justify-between items-start ${viewMode === 'list' ? 'w-1/3' : ''}`}>
                                         <div className="flex flex-col">
                                             <span className="font-bold text-white tracking-wide">{cliente.nome}</span>
                                             <span className="text-[10px] text-brand-silver/40 mt-0.5">ID: {cliente.id}</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="px-2 py-1 bg-white/10 text-[10px] font-bold text-brand-silver uppercase tracking-widest rounded-lg border border-white/5">
-                                                {cliente.area}
+                                    </div>
+                                    
+                                    <div className={`flex items-center gap-2 text-brand-silver/60 text-sm ${viewMode === 'list' ? 'w-1/4' : 'mt-2'}`}>
+                                        <Phone size={14} />
+                                        <span>{cliente.telefone}</span>
+                                    </div>
+                                    
+                                    <div className={`flex items-center gap-2 ${viewMode === 'list' ? 'w-1/5' : 'hidden'}`}>
+                                        <div className="px-2 py-1 bg-white/10 text-[10px] font-bold text-brand-silver uppercase tracking-widest rounded-lg border border-white/5">
+                                            {cliente.area}
+                                        </div>
+                                    </div>
+
+                                    <div className={`flex items-center justify-between ${viewMode === 'grid' ? 'mt-auto pt-4 border-t border-white/5' : 'w-1/4 gap-4'}`}>
+                                        <div className="flex flex-col gap-1">
+                                            {viewMode === 'grid' && (
+                                                <div className="px-2 py-1 self-start bg-white/10 text-[8px] font-bold text-brand-silver uppercase tracking-widest rounded-lg border border-white/5 mb-2">
+                                                    {cliente.area}
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-1.5 text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest">
+                                                <Shield size={12} />
+                                                {viewMode === 'grid' ? `Triagem ${cliente.status_triagem}` : 'Concluído'}
                                             </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-1">
                                             <button 
                                                 onClick={() => openEditModal(cliente)}
                                                 className="p-1.5 text-brand-silver/40 hover:text-brand-accent hover:bg-white/5 rounded-md transition-colors"
@@ -190,19 +242,13 @@ export default function ClientesList() {
                                             >
                                                 <Edit2 size={14} />
                                             </button>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-brand-silver/60 text-sm mt-2">
-                                        <Phone size={14} />
-                                        <span>{cliente.telefone}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                                        <div className="flex items-center gap-1.5 text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest">
-                                            <Shield size={12} />
-                                            Triagem {cliente.status_triagem}
-                                        </div>
-                                        <div className="text-[10px] text-brand-silver/30">
-                                            {new Date(cliente.created_at).toLocaleDateString('pt-BR')}
+                                            <button 
+                                                onClick={() => deleteCliente(cliente.id)}
+                                                className="p-1.5 text-brand-silver/40 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors"
+                                                title="Excluir Cliente"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
                                         </div>
                                     </div>
                                 </motion.div>

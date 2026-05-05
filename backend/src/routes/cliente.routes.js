@@ -8,5 +8,6 @@ router.use(authMiddleware);
 router.post('/', clienteController.create);
 router.get('/', clienteController.list);
 router.put('/:id', clienteController.update);
+router.delete('/:id', clienteController.remove);
 
 module.exports = router;

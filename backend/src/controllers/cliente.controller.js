@@ -56,3 +56,21 @@ exports.update = async (req, res) => {
         return res.status(500).json({ error: 'Erro ao atualizar cliente' });
     }
 };
+
+exports.remove = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deleteQuery = 'DELETE FROM clientes WHERE id = $1 RETURNING *';
+        const result = await db.query(deleteQuery, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Cliente não encontrado' });
+        }
+
+        return res.json({ message: 'Cliente removido com sucesso' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao excluir cliente' });
+    }
+};
