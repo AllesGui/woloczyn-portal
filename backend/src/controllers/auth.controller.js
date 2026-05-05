@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
         if (user.must_change_password) {
             return res.json({
                 requirePasswordChange: true,
-                user: { id: user.id, email: user.email },
+                user: { id: user.id, name: user.name, email: user.email },
                 token
             });
         }
