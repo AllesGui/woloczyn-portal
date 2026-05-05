@@ -4,6 +4,12 @@ exports.create = async (req, res) => {
     try {
         const { nome, telefone, area } = req.body;
 
+        const checkQuery = 'SELECT id FROM clientes WHERE telefone = $1';
+        const checkResult = await db.query(checkQuery, [telefone]);
+        if (checkResult.rows.length > 0) {
+            return res.status(400).json({ error: 'Este número de telefone já está cadastrado na cartela.' });
+        }
+
         const insertQuery = `
             INSERT INTO clientes (nome, telefone, area)
             VALUES ($1, $2, $3)
@@ -36,6 +42,12 @@ exports.update = async (req, res) => {
     try {
         const { id } = req.params;
         const { nome, telefone, area } = req.body;
+
+        const checkQuery = 'SELECT id FROM clientes WHERE telefone = $1 AND id != $2';
+        const checkResult = await db.query(checkQuery, [telefone, id]);
+        if (checkResult.rows.length > 0) {
+            return res.status(400).json({ error: 'Este número de telefone já está cadastrado em outro cliente.' });
+        }
 
         const updateQuery = `
             UPDATE clientes

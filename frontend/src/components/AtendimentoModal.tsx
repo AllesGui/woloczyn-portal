@@ -284,8 +284,12 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                                             });
                                             if(onFinalizar) onFinalizar(atendimento.id);
                                             onClose();
-                                        } catch(e) {
-                                            alert("Erro ao salvar cliente.");
+                                        } catch (err: any) {
+                                            if (err.response?.data?.error) {
+                                                alert(err.response.data.error);
+                                            } else {
+                                                alert("Erro ao salvar cliente.");
+                                            }
                                         }
                                     }}
                                     className="px-6 py-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-emerald-500/30 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] flex items-center gap-2"

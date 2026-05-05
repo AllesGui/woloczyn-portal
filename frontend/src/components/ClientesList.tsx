@@ -119,8 +119,12 @@ export default function ClientesList() {
             setIsModalOpen(false);
             setEditingId(null);
             setFormData({ nome: '', ddi: '+55', ddd: '', numero: '', area: 'Cível' });
-        } catch (err) {
-            alert("Erro ao salvar cliente.");
+        } catch (err: any) {
+            if (err.response?.data?.error) {
+                alert(err.response.data.error);
+            } else {
+                alert("Erro ao salvar cliente.");
+            }
         }
     };
 
