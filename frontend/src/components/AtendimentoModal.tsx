@@ -2,6 +2,8 @@ import { X, Clock, Tag, Phone, CheckCircle2, RotateCcw, Calendar, Hexagon } from
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import api from '../services/api';
 
 interface Atendimento {
     id: string;
@@ -26,6 +28,13 @@ interface ModalProps {
 
 export default function AtendimentoModal({ atendimento, onClose, onFinalizar, onReabrir }: ModalProps) {
     const isPendente = atendimento.status === 'pendente';
+    const [step, setStep] = useState<'view' | 'ask_cliente' | 'confirm_cliente'>('view');
+    const [clienteForm, setClienteForm] = useState({
+        nome: atendimento.nome,
+        area: ['Trabalhista', 'Cível', 'Previdenciário', 'Família'].includes(atendimento.area_juridica) 
+            ? atendimento.area_juridica 
+            : 'Cível'
+    });
     
     // Extrair número do WhatsApp JID (ex: 555196723396@s.whatsapp.net -> 555196723396)
     // telegram_chat_id armazena o JID do WhatsApp (ex: 555196723396@s.whatsapp.net)
@@ -172,27 +181,113 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                 </div>
 
                 {/* Footer Actions */}
-                <div className="border-t border-white/10 bg-black/20 p-5 flex justify-end gap-3 shrink-0 z-10 w-full backdrop-blur-md">
-                    {isPendente && onFinalizar ? (
-                        <button
-                            onClick={() => { onFinalizar(atendimento.id); onClose(); }}
-                            className="flex items-center gap-2 bg-white/10 text-brand-accent border border-white/10 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase hover:bg-emerald-500/20 hover:text-emerald-400 hover:border-emerald-500/30 transition-all"
-                        >
-                            <CheckCircle2 size={16} />
-                            Marcar como Atendido
-                        </button>
-                    ) : onReabrir ? (
-                        <button
-                            onClick={() => { onReabrir(atendimento.id); onClose(); }}
-                            className="flex items-center gap-2 bg-white/10 text-brand-accent border border-white/10 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase hover:bg-orange-500/20 hover:text-orange-400 hover:border-orange-500/30 transition-all"
-                        >
-                            <RotateCcw size={16} />
-                            Reabrir como Pendente
-                        </button>
-                    ) : null}
-                    <button onClick={onClose} className="px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase text-brand-silver/60 hover:bg-white/5 hover:text-brand-silver transition-colors">
-                        Fechar
-                    </button>
+                <div className="border-t border-white/10 bg-black/20 p-5 shrink-0 z-10 w-full backdrop-blur-md">
+                    {step === 'view' && (
+                        <div className="flex justify-end gap-3">
+                            {isPendente && onFinalizar ? (
+                                <button
+                                    onClick={() => setStep('ask_cliente')}
+                                    className="flex items-center gap-2 bg-white/10 text-brand-accent border border-white/10 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase hover:bg-emerald-500/20 hover:text-emerald-400 hover:border-emerald-500/30 transition-all"
+                                >
+                                    <CheckCircle2 size={16} />
+                                    Marcar como Atendido
+                                </button>
+                            ) : onReabrir ? (
+                                <button
+                                    onClick={() => { onReabrir(atendimento.id); onClose(); }}
+                                    className="flex items-center gap-2 bg-white/10 text-brand-accent border border-white/10 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase hover:bg-orange-500/20 hover:text-orange-400 hover:border-orange-500/30 transition-all"
+                                >
+                                    <RotateCcw size={16} />
+                                    Reabrir como Pendente
+                                </button>
+                            ) : null}
+                            <button onClick={onClose} className="px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase text-brand-silver/60 hover:bg-white/5 hover:text-brand-silver transition-colors">
+                                Fechar
+                            </button>
+                        </div>
+                    )}
+
+                    {step === 'ask_cliente' && (
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-4 py-2">
+                            <p className="text-brand-accent font-bold tracking-wide">Deseja adicionar <span className="text-white">{atendimento.nome}</span> à sua Cartela de Clientes?</p>
+                            <div className="flex gap-3 w-full justify-center">
+                                <button
+                                    onClick={() => setStep('confirm_cliente')}
+                                    className="px-6 py-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-emerald-500/30 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                                >
+                                    Sim, adicionar
+                                </button>
+                                <button
+                                    onClick={() => { if(onFinalizar) onFinalizar(atendimento.id); onClose(); }}
+                                    className="px-6 py-2.5 bg-white/10 text-brand-silver border border-white/10 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-white/20 transition-all"
+                                >
+                                    Não, apenas finalizar
+                                </button>
+                                <button
+                                    onClick={() => setStep('view')}
+                                    className="px-6 py-2.5 text-brand-silver/50 hover:text-white uppercase tracking-wider text-xs font-bold transition-all"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {step === 'confirm_cliente' && (
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
+                            <p className="text-brand-accent font-bold text-sm tracking-wide mb-1"><Hexagon size={14} className="inline mr-2" />Confirmar dados do Cliente</p>
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <input 
+                                    type="text"
+                                    value={clienteForm.nome}
+                                    onChange={e => setClienteForm({...clienteForm, nome: e.target.value})}
+                                    className="flex-1 bg-black/40 border border-white/10 text-brand-silver px-4 py-3 rounded-xl text-sm focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none transition-all"
+                                    placeholder="Nome do Cliente"
+                                />
+                                <select
+                                    value={clienteForm.area}
+                                    onChange={e => setClienteForm({...clienteForm, area: e.target.value})}
+                                    className="bg-black/40 border border-white/10 text-brand-silver px-4 py-3 rounded-xl text-sm focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none transition-all appearance-none md:w-1/3 cursor-pointer"
+                                >
+                                    <option value="Trabalhista" className="bg-[#172229] text-white">Trabalhista</option>
+                                    <option value="Cível" className="bg-[#172229] text-white">Cível</option>
+                                    <option value="Previdenciário" className="bg-[#172229] text-white">Previdenciário</option>
+                                    <option value="Família" className="bg-[#172229] text-white">Família</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-3 mt-2">
+                                <button
+                                    onClick={() => setStep('view')}
+                                    className="px-6 py-2.5 bg-white/10 text-brand-silver border border-white/10 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-white/20 transition-all"
+                                >
+                                    Voltar
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        let cleanNumber = whatsappNumber.replace(/\D/g, '');
+                                        if (!cleanNumber.startsWith('55') && cleanNumber.length <= 11) {
+                                            cleanNumber = '55' + cleanNumber;
+                                        }
+                                        try {
+                                            await api.post('/clientes', {
+                                                nome: clienteForm.nome,
+                                                telefone: cleanNumber,
+                                                area: clienteForm.area
+                                            });
+                                            if(onFinalizar) onFinalizar(atendimento.id);
+                                            onClose();
+                                        } catch(e) {
+                                            alert("Erro ao salvar cliente.");
+                                        }
+                                    }}
+                                    className="px-6 py-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold uppercase tracking-wider text-xs hover:bg-emerald-500/30 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] flex items-center gap-2"
+                                >
+                                    <CheckCircle2 size={16} />
+                                    Salvar e Finalizar
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
             </motion.div>
         </div>
