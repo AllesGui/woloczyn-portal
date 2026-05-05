@@ -265,9 +265,17 @@ export default function AtendimentoModal({ atendimento, onClose, onFinalizar, on
                                 <button
                                     onClick={async () => {
                                         let cleanNumber = whatsappNumber.replace(/\D/g, '');
+                                        
+                                        // Garantir que comece com 55
                                         if (!cleanNumber.startsWith('55') && cleanNumber.length <= 11) {
                                             cleanNumber = '55' + cleanNumber;
                                         }
+                                        
+                                        // Se o número tem 12 dígitos (55 + 2 DDD + 8 Número), falta o 9
+                                        if (cleanNumber.length === 12) {
+                                            cleanNumber = cleanNumber.substring(0, 4) + '9' + cleanNumber.substring(4);
+                                        }
+                                        
                                         try {
                                             await api.post('/clientes', {
                                                 nome: clienteForm.nome,
