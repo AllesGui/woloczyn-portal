@@ -87,6 +87,16 @@ export default function ClientesList() {
         const cleanDdd = formData.ddd.replace(/\D/g, '');
         const cleanNumero = formData.numero.replace(/\D/g, '');
         
+        if (cleanDdd.length !== 2) {
+            alert("O DDD deve conter exatamente 2 dígitos.");
+            return;
+        }
+        
+        if (cleanNumero.length !== 9) {
+            alert("O número de celular deve conter exatamente 9 dígitos.");
+            return;
+        }
+        
         const telefoneFormatado = `${cleanDdi}${cleanDdd}${cleanNumero}`;
         
         try {
@@ -311,10 +321,11 @@ export default function ClientesList() {
                                             type="text"
                                             required
                                             value={formData.ddd}
-                                            onChange={e => setFormData({...formData, ddd: e.target.value})}
+                                            onChange={e => setFormData({...formData, ddd: e.target.value.replace(/\D/g, '')})}
                                             className="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm glass-input text-center"
                                             placeholder="DDD"
                                             maxLength={2}
+                                            minLength={2}
                                         />
                                     </div>
                                     <div className="flex-1">
@@ -322,9 +333,11 @@ export default function ClientesList() {
                                             type="text"
                                             required
                                             value={formData.numero}
-                                            onChange={e => setFormData({...formData, numero: e.target.value})}
+                                            onChange={e => setFormData({...formData, numero: e.target.value.replace(/\D/g, '')})}
                                             className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-brand-silver focus:border-brand-silver focus:ring-1 focus:ring-brand-silver outline-none text-sm glass-input"
                                             placeholder="Ex: 999999999"
+                                            maxLength={9}
+                                            minLength={9}
                                         />
                                     </div>
                                 </div>
